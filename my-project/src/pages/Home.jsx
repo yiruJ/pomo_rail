@@ -1,6 +1,10 @@
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import TrainModel from "../components/TrainModel";
+import MiniTrainStationModel from "../components/MiniTrainStationModel";
+import TrackModel from "../components/TrackModel";
+import TreeOneModel from "../components/TreeOneModel";
+import TreeTwoModel from "../components/TreeTwoModel";
 
 export default function Home() {
     return (
@@ -12,7 +16,7 @@ export default function Home() {
             <directionalLight position={[5, 5, 5]} intensity={1} />
 
             {/* your Blender model */}
-            <TrainModel scale={1} position={[0, 0, 0]} />
+            <TreeTwoModel scale={1} position={[0, 0, 0]}/>
 
             {/* controls */}
             <OrbitControls target={[0, 0, 0]}/>
