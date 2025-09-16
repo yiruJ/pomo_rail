@@ -1,0 +1,7 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Quicksand:wght@400;700&display=swap');
+@import "tailwindcss";
+/* Define the font in the v4 theme layer */
+@theme {
+  --font-quickSand: "Quicksand", sans-serif;
+}
