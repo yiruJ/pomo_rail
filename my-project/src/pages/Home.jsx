@@ -4,70 +4,37 @@ import MainStationModel from "../components/MainStationModel";
 import { FaArrowUp, FaArrowDown, FaHatWizard } from "react-icons/fa";
 import { useState } from "react";
 
+const TIMER = {
+    POMO: "pomo",
+    BREAK: "break"
+}
+
+const TIMER_CONFIG = {
+    [TIMER.POMO]: {min: 10, max: 60, step: 5, initial: 25},
+    [TIMER.BREAK]: {min: 5, max: 30, step: 5, initial: 5},
+}
+
+const clamp = (v, min, max) => (Math.max(min, Math.min(max, v)));
+
 export default function Home() {
-    const [pomoDigitOne, setPomoDigitOne] = useState(2);
-    const [pomoDigitTwo, setPomoDigitTwo] = useState(5);
+    const [timerType, setTimerType] = useState(TIMER.POMO);
+    const [minutes, setMinutes] = useState({
+        [TIMER.POMO]: TIMER_CONFIG[TIMER.POMO].initial,
+        [TIMER.BREAK]: TIMER_CONFIG[TIMER.BREAK].initial,
+    });
 
-    const [breakDigitOne, setBreakDigitOne] = useState(0);
-    const [breakDigitTwo, setBreakDigitTwo] = useState(5);
-
-    const [currTimer, setCurrTimer] = useState("pomo");
-
-    function showBreakTimer() {
-        setCurrTimer("break");
-    }
-
-    function showPomoTimer() {
-        setCurrTimer("pomo");
+    function changeTimerType(timerType) {
+        setTimerType(timerType);
     }
 
     function updateTimer(direction) {
-        currTimer === "break" ? updateBreakTimer(direction) : updatePomoTimer(direction);
-    }
-
-    function updatePomoTimer(direction) {
-        console.log("hi");
-        if (direction === "up") {
-            if (pomoDigitOne === 5 && pomoDigitTwo === 5) return;
-
-            if (pomoDigitTwo === 5) {
-                setPomoDigitTwo(0);
-                setPomoDigitOne(pomoDigitOne + 1);
-            } else {
-                setPomoDigitTwo(5);
-            }
-        } else {
-            if (pomoDigitOne === 1 && pomoDigitTwo === 0) return;
-
-            if (pomoDigitTwo === 0) {
-                setPomoDigitTwo(5);
-                setPomoDigitOne(pomoDigitOne - 1);
-            } else {
-                setPomoDigitTwo(0);
-            }
-        }
-    }
-
-    function updateBreakTimer(direction) {
-        if (direction === "up") {
-            if (breakDigitOne === 3 && breakDigitTwo === 0) return;
-
-            if (breakDigitTwo === 5) {
-                setBreakDigitTwo(0);
-                setBreakDigitOne(breakDigitOne + 1);
-            } else {
-                setBreakDigitTwo(5);
-            }
-        } else {
-            if (breakDigitOne === 0 && breakDigitTwo === 5) return;
-
-            if (breakDigitTwo === 0) {
-                setBreakDigitTwo(5);
-                setBreakDigitOne(breakDigitOne - 1);
-            } else {
-                setBreakDigitTwo(0);
-            }
-        }
+        const cfg = TIMER_CONFIG[timerType];
+        const delta = direction === "up" ? cfg.step : -cfg.step;
+        const update = clamp(minutes[timerType] + delta, cfg.min, cfg.max);
+        setMinutes(prev => ({
+            ...prev,
+            [timerType]: update
+        }))
     }
 
     return (
@@ -118,18 +85,18 @@ export default function Home() {
             {/* panel mode */}
             <div className="absolute top-16 justify-center -translate-x-3 w-full z-20 flex gap-36">
                 <button
-                    onClick={() => showPomoTimer()}
+                    onClick={() => changeTimerType(TIMER.POMO)}
                 >
                     <p className="text-white font-quickSand text-2xl font-bold">Pomodoro</p>
                 </button>
                 <button
-                    onClick={() => showBreakTimer()}
+                    onClick={() => changeTimerType(TIMER.BREAK)}
                 >
                     <p className="text-white font-quickSand text-2xl font-bold">Break</p>
                 </button>
             </div>
 
-            <FaHatWizard className={`z-20 absolute top-10 ${currTimer === "pomo" ? "left-6/14" : "right-6/14" } w-6 h-6 text-white/70 animate-bounce`}/>
+            <FaHatWizard className={`z-20 absolute top-10 ${timerType === "pomo" ? "left-6/14" : "right-6/14" } w-6 h-6 text-white/70 animate-bounce`}/>
 
             {/* timer panel*/}
             <div
@@ -139,16 +106,16 @@ export default function Home() {
             >
                 <div className="flex flex-col items-center gap-10 h-full justify-center">
                     {/* pomo timer */}
-                    <div id="pomo" className={currTimer === "pomo" ? "" : "hidden"}>
+                    <div id="pomo" className={timerType === "pomo" ? "" : "hidden"}>
                         <p className="text-9xl text-white font-quickSand font-extrabold">
-                            {pomoDigitOne}{pomoDigitTwo} : 00
+                            {minutes[timerType]}<span className="text-4xl">mins</span>
                         </p>
                     </div>
 
                     {/* break timer */}
-                    <div id="break" className={currTimer === "break" ? "" : "hidden"}>
+                    <div id="break" className={timerType === "break" ? "" : "hidden"}>
                         <p className="text-9xl text-white font-quickSand font-extrabold">
-                            {breakDigitOne}{breakDigitTwo} : 00
+                            {minutes[timerType]}<span className="text-4xl">mins</span>
                         </p>
                     </div>
 
