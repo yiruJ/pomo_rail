@@ -18,19 +18,20 @@ export default function TrainModel(props) {
 
     scene.traverse((obj) => {
         if (obj.isMesh) {
+            obj.castShadow = true;
             const name = obj.name;
             if (name.includes("first")) {
-                obj.material = new THREE.MeshBasicMaterial({
+                obj.material = new THREE.MeshStandardMaterial({
                     map: textures.txt1,
                     toneMapped: false, // avoids washed-out colors
                 });
             } else if (name.includes("second")) {
-                obj.material = new THREE.MeshBasicMaterial({
+                obj.material = new THREE.MeshStandardMaterial({
                     map: textures.txt2,
                     toneMapped: false, // avoids washed-out colors
                 });
             } else if (name.includes("third")) {
-                obj.material = new THREE.MeshBasicMaterial({
+                obj.material = new THREE.MeshStandardMaterial({
                     map: textures.txt3,
                     toneMapped: false, // avoids washed-out colors
                 });

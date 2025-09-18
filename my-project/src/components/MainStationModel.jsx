@@ -18,8 +18,8 @@ export default function MainStationModel(props) {
 
     scene.traverse((obj) => {
         if (obj.isMesh) {
+            obj.castShadow = true;
             const name = obj.name;
-            
             if (name.includes("screen")) {
                 obj.visible = false;
             }
