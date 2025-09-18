@@ -5,12 +5,24 @@ import TrainModel from "../components/TrainModel";
 import { FaArrowUp, FaArrowDown, FaHatWizard } from "react-icons/fa";
 import * as THREE from "three";
 import handleTimer, { TIMER } from "../hooks/handleTimer";
+import { motion, AnimatePresence } from "framer-motion";
+import { useState } from "react";
 
 export default function Home() {    
     const { timerType, currentMinutes, setTimerType, updateTimer } = handleTimer();
 
+    const SESSION = {
+        HOME: "home",
+        START: "start",
+        PAUSE: "pause",
+        ONGOING: "ongoing",
+        END: "end"
+    };
+
+    const [sessionState, setSessionState] = useState(SESSION.HOME);
+
     function startSession() {
-        
+        setSessionState(SESSION.START);
     }
 
     return (
@@ -23,9 +35,8 @@ export default function Home() {
 
             {/* lights */}
             <directionalLight 
-                position={[10, 20, 10]} 
+                position={[10, 5, 10]} 
                 intensity={2} 
-                color={"#ffe0b2"}
                 castShadow
                 shadow-mapSize-width={2048}
                 shadow-mapSize-height={2048}
@@ -51,14 +62,23 @@ export default function Home() {
             <MainStationModel castShadow scale={1} position={[0, 0, 0]}/>
             <TrainModel castShadow scale={1.5} position={[0, 0, 18]}/>
 
-            {/* bg */}
-            {/* <color attach="background" args={["#ddaca3"]} /> */}
-
             <Environment preset="city" /> 
 
+            {/* floor */}
             <mesh receiveShadow rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
-                <planeGeometry args={[1000, 1000]} />  {/* width, height */}
+                <planeGeometry args={[10000, 10000]} />  {/* width, height */}
                 <meshStandardMaterial color="#8f6861" side={THREE.DoubleSide} />
+            </mesh>
+            {/* Left wall (along Z) */}
+            <mesh position={[0, 0, -500]} castShadow receiveShadow>
+                <boxGeometry args={[10000, 10000]} />
+                <meshStandardMaterial color="#8f6861" side={THREE.DoubleSide}/>
+            </mesh>
+
+            {/* Back wall (along X) */}
+            <mesh position={[500, 0, 0]}  rotation={[0, Math.PI / 2, 0]} castShadow receiveShadow>
+                <boxGeometry args={[10000, 10000]} />
+                <meshStandardMaterial color="#8f6861" />
             </mesh>
 
             {/* controls */}
@@ -83,51 +103,70 @@ export default function Home() {
                 </button>
             </div>
 
-            <FaHatWizard className={`z-20 absolute top-10 ${timerType === "pomo" ? "left-6/14" : "right-6/14" } w-6 h-6 text-white/70 animate-bounce`}/>
-
-            {/* timer panel*/}
-            <div
-                className="h-80 w-1/3 bg-red-50/40 z-10 absolute top-28 
-                        left-1/2 -translate-x-1/2 rounded-4xl border-4 
-                        border-white shadow-xl"
+            <motion.div
+                className="z-20 absolute top-10"
+                animate={{ left: timerType === "pomo" ? "43%" : "55.6%" }} 
+                transition={{ type: "spring", stiffness: 100, damping: 15 }}
             >
-                <div className="flex flex-col items-center gap-10 h-full justify-center">
-                    {/* pomo timer */}
-                    <div id="pomo" className={timerType === "pomo" ? "" : "hidden"}>
-                        <p className="text-9xl text-white font-quickSand font-extrabold">
-                            {currentMinutes}<span className="text-4xl">mins</span>
-                        </p>
+                <FaHatWizard className="w-6 h-6 text-white/70" />
+            </motion.div>
+            
+            {/* timer panel */}
+            <AnimatePresence
+                mode="wait"
+            >
+                <motion.div
+                    key={sessionState}
+                    className="h-80 w-1/3 bg-red-50/40 z-10 absolute
+                                rounded-4xl border-4 border-white shadow-xl
+                                -translate-x-1/2"
+                    style={{
+                        left: sessionState === SESSION.HOME ? "50%" : "20%",
+                        top:  sessionState === SESSION.HOME ? "12%" : "5%",
+                    }}
+                    initial={{ opacity: 0, scale: 1, y:12 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.96, y: -16 }}
+                    transition={{ duration: 0.4 }}
+                >
+                    <div className="flex flex-col items-center gap-10 h-full justify-center">
+                        <div id="pomo" className={timerType === TIMER.POMO ? "" : "hidden"}>
+                            <p className="text-9xl text-white font-quickSand font-extrabold">
+                                {currentMinutes}<span className="text-4xl">mins</span>
+                            </p>
+                        </div>
+                        <div id="break" className={timerType === TIMER.BREAK ? "" : "hidden"}>
+                            <p className="text-9xl text-white font-quickSand font-extrabold">
+                                {currentMinutes}<span className="text-4xl">mins</span>
+                            </p>
+                        </div>
+                        <AnimatePresence initial={false}> 
+                            {sessionState === SESSION.HOME && (
+                                <motion.div
+                                    key="timer-controls"
+                                    className="flex flex-row gap-10"
+                                    exit={{ opacity: 0, y: -6 }}
+                                    transition={{ duration: 0.2 }}
+                                >
+                                <button onClick={() => updateTimer("up")}>
+                                    <FaArrowUp className="text-white w-12 h-12 transition-transform duration-100 hover:scale-125" />
+                                </button>
+                                <button onClick={() => updateTimer("down")}>
+                                    <FaArrowDown className="text-white w-12 h-12 transition-transform duration-100 hover:scale-125" />
+                                </button>
+                                </motion.div>
+                            )}
+                        </AnimatePresence>
                     </div>
+                </motion.div>
+            </AnimatePresence>
 
-                    {/* break timer */}
-                    <div id="break" className={timerType === "break" ? "" : "hidden"}>
-                        <p className="text-9xl text-white font-quickSand font-extrabold">
-                            {currentMinutes}<span className="text-4xl">mins</span>
-                        </p>
-                    </div>
-
-                    {/* update timer */}
-                    <div className="flex flex-row gap-10 ">
-                        <button onClick={() => updateTimer("up")}>
-                            <FaArrowUp 
-                                className="text-white w-12 h-12 transform transition-transform 
-                                          duration-100 hover:scale-125"
-                            />
-                        </button>
-                        <button onClick={() => updateTimer("down")}>
-                            <FaArrowDown 
-                                className="text-white w-12 h-12 transform transition-transform 
-                                          duration-100 hover:scale-125" 
-                            />
-                        </button>
-                    </div>
-                </div>   
-            </div>
             {/* title */}
             <p className="font-quickSand text-9xl left-30 top-1/2 absolute z-10
                        text-white font-medium -translate-y-1/2">
                 Pomo  <br/> Rail
             </p>
+
             {/* start button */}
             <button
                 onClick = {() => startSession()}
