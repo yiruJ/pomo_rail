@@ -90,27 +90,37 @@ export default function Home() {
     
         </Canvas>
             {/* panel mode */}
-            <div className="absolute top-16 justify-center -translate-x-3 w-full z-20 flex gap-36">
-                <button
-                    onClick={() => setTimerType(TIMER.POMO)}
-                >
-                    <p className="text-white font-quickSand text-2xl font-bold">Pomodoro</p>
-                </button>
-                <button
-                    onClick={() => setTimerType(TIMER.BREAK)}
-                >
-                    <p className="text-white font-quickSand text-2xl font-bold">Break</p>
-                </button>
-            </div>
+            <AnimatePresence>
+                { sessionState === SESSION.HOME && (
+                    <>
+                        <motion.div 
+                            className="absolute top-16 justify-center -translate-x-3 w-full z-20 flex gap-36"
+                            initial={{ opacity: 0, scale: 1, y:12 }}
+                            animate={{ opacity: 1, scale: 1, y: 0 }}
+                            exit={{ opacity: 0, scale: 0.96, y: -16 }}
+                        >
+                            <button
+                                onClick={() => setTimerType(TIMER.POMO)}
+                            >
+                                <p className="text-white font-quickSand text-2xl font-bold">Pomodoro</p>
+                            </button>
+                            <button
+                                onClick={() => setTimerType(TIMER.BREAK)}
+                            >
+                                <p className="text-white font-quickSand text-2xl font-bold">Break</p>
+                            </button>
+                        </motion.div>
+                        <motion.div
+                            className="z-20 absolute top-10"
+                            animate={{ left: timerType === "pomo" ? "43%" : "55.6%" }} 
+                            transition={{ type: "spring", stiffness: 100, damping: 15 }}
+                        >
+                            <FaHatWizard className="w-6 h-6 text-white/70" />
+                        </motion.div>
+                    </>
+                )}
+            </AnimatePresence>
 
-            <motion.div
-                className="z-20 absolute top-10"
-                animate={{ left: timerType === "pomo" ? "43%" : "55.6%" }} 
-                transition={{ type: "spring", stiffness: 100, damping: 15 }}
-            >
-                <FaHatWizard className="w-6 h-6 text-white/70" />
-            </motion.div>
-            
             {/* timer panel */}
             <AnimatePresence
                 mode="wait"
@@ -162,21 +172,40 @@ export default function Home() {
             </AnimatePresence>
 
             {/* title */}
-            <p className="font-quickSand text-9xl left-30 top-1/2 absolute z-10
-                       text-white font-medium -translate-y-1/2">
-                Pomo  <br/> Rail
-            </p>
+            <AnimatePresence>
+                {sessionState === SESSION.HOME && (
+                    <motion.div
+                        className="font-quickSand text-9xl left-30 top-1/2 absolute z-10 text-white font-medium -translate-y-1/2"
+                        initial={{ opacity: 0, scale: 1, y:12 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                        exit={{ opacity: 0, scale: 0.96, y: -16 }}
+                    >
+                        <p >
+                            Pomo  <br/> Rail
+                        </p>
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             {/* start button */}
-            <button
-                onClick = {() => startSession()}
-            >
-                <p className="font-quickSand text-6xl right-50 top-1/2 absolute z-10
-                        text-white font-bold -translate-y-1/2 transform transition-transform 
-                        duration-100 hover:scale-125">
-                    start
-                </p>
-            </button>
+            <AnimatePresence>
+                {sessionState === SESSION.HOME && (
+                    <motion.div
+                        initial={{ opacity: 0, scale: 1, y:12 }}
+                        animate={{ opacity: 1, scale: 1, y: 0 }}
+                    >
+                        <button
+                            onClick = {() => startSession()}
+                        >
+                            <p className="font-quickSand text-6xl right-50 top-1/2 absolute z-10
+                                    text-white font-bold -translate-y-1/2 transform transition-transform 
+                                    duration-100 hover:scale-125">
+                                start
+                            </p>
+                        </button>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }
