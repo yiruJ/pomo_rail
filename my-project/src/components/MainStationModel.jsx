@@ -22,6 +22,12 @@ export default function MainStationModel(props) {
             const name = obj.name;
             if (name.includes("screen")) {
                 obj.visible = false;
+            } else if (name.includes("wizard")) {
+                obj.material = new THREE.MeshBasicMaterial({
+                    map: textures.clockTower,
+                    flatShading: true,
+                    toneMapped: false,
+                });
             }
 
             if (name.includes("base") || name.includes("gate")) {
@@ -29,7 +35,7 @@ export default function MainStationModel(props) {
                     map: textures.base,
                     toneMapped: false, // avoids washed-out colors
                 });
-            } else if (name.includes("clock_tower") || name.includes("wizard")) {
+            } else if (name.includes("clock_tower")) {
                 obj.material = new THREE.MeshStandardMaterial({
                     map: textures.clockTower,
                     flatShading: true,

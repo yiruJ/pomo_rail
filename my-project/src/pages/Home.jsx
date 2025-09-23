@@ -1,12 +1,12 @@
 import { Canvas, useThree, useFrame   } from "@react-three/fiber";
-import { OrbitControls, Environment  } from "@react-three/drei";
+import { OrbitControls, Environment, CameraControls  } from "@react-three/drei";
 import MainStationModel from "../components/MainStationModel";
 import TrainModel from "../components/TrainModel";
 import { FaArrowUp, FaArrowDown, FaHatWizard } from "react-icons/fa";
 import * as THREE from "three";
 import handleTimer, { TIMER } from "../hooks/handleTimer";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useRef, useMemo, useState, useEffect } from "react";
 
 export default function Home() {
     const BG_COLOUR = "#C4DDA3";  
@@ -24,15 +24,35 @@ export default function Home() {
 
     function startSession() {
         setSessionState(SESSION.START);
+
     }
+
+    const camCtrlRef = useRef(null);
+
+    function CameraLogger() {
+        
+        useFrame(() => {
+            const c = camCtrlRef.current;
+            if (c) {
+            const pos = new THREE.Vector3();
+            const tgt = new THREE.Vector3();
+            c.getPosition(pos);
+            c.getTarget(tgt);
+            console.log("Camera pos:", pos, "Target:", tgt);
+            }
+        });
+    return null;
+}
 
     return (
         <div className="relative">
         <Canvas 
             shadows
-            style={{ width: '100%', height: '100vh' }}
+            style={{ width: '100%', height: '100vh'}}
             camera={{ position: [-5.5, 70.8, 12.6], fov: 50 }}
             gl={{ shadowMap: { enabled: true, type: THREE.PCFSoftShadowMap } }}>
+
+            <CameraLogger />
 
             {/* lights */}
             <directionalLight 
@@ -72,23 +92,33 @@ export default function Home() {
                 <meshStandardMaterial color={BG_COLOUR} side={THREE.DoubleSide} />
             </mesh>
             {/* Left wall (along Z) */}
-            <mesh position={[0, 0, -500]} castShadow receiveShadow>
+            <mesh position={[0, 0, -50]} castShadow receiveShadow>
                 <boxGeometry args={[10000, 10000]} />
                 <meshStandardMaterial color={BG_COLOUR} side={THREE.DoubleSide}/>
             </mesh>
 
             {/* Back wall (along X) */}
-            <mesh position={[500, 0, 0]}  rotation={[0, Math.PI / 2, 0]} castShadow receiveShadow>
+            <mesh position={[100, 0, 0]}  rotation={[0, Math.PI / 2, 0]} castShadow receiveShadow>
                 <boxGeometry args={[1000, 10000]} />
                 <meshStandardMaterial color={BG_COLOUR} />
             </mesh>
-            
-            {/* controls */}
-            <OrbitControls 
-                target={[-5.2, 81.3, -19]}
-                // enableZoom={false}
-                // enableRotate={false}
-            />
+
+            <CameraControls  
+                ref={(inst) => {
+                    camCtrlRef.current = inst;
+                    if (inst && sessionState === SESSION.HOME) {
+                        inst.camera.up.set(0, 1, 0);
+                        inst.setLookAt(-5.5, 70.8, 12.6,  -5.2, 81.3, -19,  false);
+                    } else if (inst && sessionState === SESSION.START) {
+                        inst.setLookAt(-65, 80, 100, -50, 55, 45, true);
+                    }
+                }}
+                smoothTime={1.0} 
+                enabled={true}
+                enablePan={true}
+                enableZoom={true} 
+                enableRotate={true}
+            /> 
     
         </Canvas>
             {/* panel mode */}
@@ -197,7 +227,7 @@ export default function Home() {
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                     >
                         <button
-                            onClick = {() => startSession()}
+                            onClick={startSession}
                         >
                             <p className="font-quickSand text-6xl right-50 top-1/2 absolute z-10
                                     text-white font-bold -translate-y-1/2 transform transition-transform 
