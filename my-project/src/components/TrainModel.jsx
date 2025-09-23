@@ -6,9 +6,9 @@ export default function TrainModel(props) {
     const { scene } = useGLTF("/models/train.glb"); // put train.glb in /public/models
 
     const textures = {
-        txt1 : useTexture("/textures/train_txt_1.webp"),
-        txt2 : useTexture("/textures/train_txt_2.webp"),
-        txt3 : useTexture("/textures/train_txt_3.webp"),
+        txt_one : useTexture("/textures/train_one.webp"),
+        txt_two : useTexture("/textures/train_two.webp"),
+        txt_bears : useTexture("/textures/train_bears.webp"),
     }
 
     Object.values(textures).forEach((txt => {
@@ -20,19 +20,19 @@ export default function TrainModel(props) {
         if (obj.isMesh) {
             obj.castShadow = true;
             const name = obj.name;
-            if (name.includes("first")) {
+            if (name.includes("one") || name.includes("funnel")) {
                 obj.material = new THREE.MeshStandardMaterial({
-                    map: textures.txt1,
+                    map: textures.txt_one,
                     toneMapped: false, // avoids washed-out colors
                 });
-            } else if (name.includes("second")) {
+            } else if (name.includes("two")) {
                 obj.material = new THREE.MeshStandardMaterial({
-                    map: textures.txt2,
+                    map: textures.txt_two,
                     toneMapped: false, // avoids washed-out colors
                 });
-            } else if (name.includes("third")) {
+            } else if (name.includes("bears")) {
                 obj.material = new THREE.MeshStandardMaterial({
-                    map: textures.txt3,
+                    map: textures.txt_bears,
                     toneMapped: false, // avoids washed-out colors
                 });
             }

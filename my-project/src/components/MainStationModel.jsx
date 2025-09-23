@@ -8,7 +8,7 @@ export default function MainStationModel(props) {
     const textures = {
         body : useTexture("/textures/main_station_body.webp"),
         base : useTexture("/textures/main_station_base.webp"),
-        clockTower : useTexture("/textures/clock_tower.webp"),
+        clockTower : useTexture("/textures/main_station_clock_tower.webp"),
     }
 
     Object.values(textures).forEach((txt => {
@@ -29,7 +29,7 @@ export default function MainStationModel(props) {
                     map: textures.base,
                     toneMapped: false, // avoids washed-out colors
                 });
-            } else if (name.includes("clock_tower")) {
+            } else if (name.includes("clock_tower") || name.includes("wizard")) {
                 obj.material = new THREE.MeshStandardMaterial({
                     map: textures.clockTower,
                     flatShading: true,

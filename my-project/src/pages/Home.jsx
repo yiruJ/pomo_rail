@@ -1,4 +1,4 @@
-import { Canvas  } from "@react-three/fiber";
+import { Canvas, useThree, useFrame   } from "@react-three/fiber";
 import { OrbitControls, Environment  } from "@react-three/drei";
 import MainStationModel from "../components/MainStationModel";
 import TrainModel from "../components/TrainModel";
@@ -8,7 +8,8 @@ import handleTimer, { TIMER } from "../hooks/handleTimer";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 
-export default function Home() {    
+export default function Home() {
+    const BG_COLOUR = "#C4DDA3";  
     const { timerType, currentMinutes, setTimerType, updateTimer } = handleTimer();
 
     const SESSION = {
@@ -30,13 +31,13 @@ export default function Home() {
         <Canvas 
             shadows
             style={{ width: '100%', height: '100vh' }}
-            camera={{ position: [3.5, 74, 12], fov: 50 }}
+            camera={{ position: [-5.5, 70.8, 12.6], fov: 50 }}
             gl={{ shadowMap: { enabled: true, type: THREE.PCFSoftShadowMap } }}>
 
             {/* lights */}
             <directionalLight 
                 position={[10, 5, 10]} 
-                intensity={2} 
+                intensity={1} 
                 castShadow
                 shadow-mapSize-width={2048}
                 shadow-mapSize-height={2048}
@@ -49,41 +50,42 @@ export default function Home() {
             />
             <directionalLight 
                 position={[-5, 3, 20]} 
-                intensity={4} 
+                intensity={0} 
                 color={"#b388eb"} // soft purple accent
             />
             <ambientLight 
-                intensity={0.3} 
+                intensity={0} 
                 color={"#88aaff"} 
             />
             <hemisphereLight args={["#fff0f0", "#8888ff", 0.6]} />
 
-            {/* your Blender model */}
-            <MainStationModel castShadow scale={1} position={[0, 0, 0]}/>
-            <TrainModel castShadow scale={1.5} position={[0, 0, 18]}/>
+            {/* load models */}
+            <MainStationModel castShadow scale={1} position={[0, 0, 0]} rotation={[0, Math.PI, 0]}/>
+            <TrainModel castShadow scale={1.5} position={[-5, 0, 20]} rotation={[0, Math.PI, 0]}/>
 
-            <Environment preset="city" /> 
+            {/* environment */}
+            <Environment preset="lobby" /> 
 
             {/* floor */}
             <mesh receiveShadow rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
-                <planeGeometry args={[10000, 10000]} />  {/* width, height */}
-                <meshStandardMaterial color="#8f6861" side={THREE.DoubleSide} />
+                <planeGeometry args={[1000, 1000]} />  {/* width, height */}
+                <meshStandardMaterial color={BG_COLOUR} side={THREE.DoubleSide} />
             </mesh>
             {/* Left wall (along Z) */}
             <mesh position={[0, 0, -500]} castShadow receiveShadow>
                 <boxGeometry args={[10000, 10000]} />
-                <meshStandardMaterial color="#8f6861" side={THREE.DoubleSide}/>
+                <meshStandardMaterial color={BG_COLOUR} side={THREE.DoubleSide}/>
             </mesh>
 
             {/* Back wall (along X) */}
             <mesh position={[500, 0, 0]}  rotation={[0, Math.PI / 2, 0]} castShadow receiveShadow>
-                <boxGeometry args={[10000, 10000]} />
-                <meshStandardMaterial color="#8f6861" />
+                <boxGeometry args={[1000, 10000]} />
+                <meshStandardMaterial color={BG_COLOUR} />
             </mesh>
-
+            
             {/* controls */}
             <OrbitControls 
-                target={[0, 77, 0]}
+                target={[-5.2, 81.3, -19]}
                 // enableZoom={false}
                 // enableRotate={false}
             />
