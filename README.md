@@ -11,7 +11,7 @@ The core 3D models are complete and basic scenes are working, with timer and bac
 ---
 
 ## 🎥 Preview
-![Alt text for image](./my-project/demo_images/home_page.png)
+![Alt text for image](./my-project/public/demo_images/home_page.png)
 ![Alt text for image](./demo_images/title_page.png)
 
 ### Blender renders:
