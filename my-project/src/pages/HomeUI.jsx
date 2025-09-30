@@ -12,7 +12,7 @@ export default function HomeUI({  timerType, setTimerType, updateTimer, currentM
                 <motion.div
                     className="z-20 absolute"
                     animate={{ left: timerType === TIMER.POMO ? "16.5%" : "34%", top: "5%"}}
-                    transition={{ type: "spring", stiffness: 100, damping: 15 }}
+                    transition={{ type: "spring", stiffness: 100, damping: 15, delay: 3 }}
                 >
                     <FaHatWizard className="w-6 h-6 text-white/70" />
                 </motion.div>
@@ -25,6 +25,7 @@ export default function HomeUI({  timerType, setTimerType, updateTimer, currentM
                         key="timer-type"
                         className="flex justify-evenly mt-[5%] w-full"
                         initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }}
+                        transition={{ duration: 0.4, delay: 3 }}
                     >
                         <button onClick={() => setTimerType(TIMER.POMO)}><p className="small-text">Pomodoro</p></button>
                         <button onClick={() => setTimerType(TIMER.BREAK)}><p className="small-text">Break</p></button>
@@ -37,7 +38,7 @@ export default function HomeUI({  timerType, setTimerType, updateTimer, currentM
                         key="timer-panel"
                         className="timer-panel mt-[1%]"
                         style={{ left: "20%", top: "12%" }}
-                        initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }} transition={{ duration: 0.4 }}
+                        initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }} transition={{ duration: 0.4, delay: 3 }}
                     >
                     <div className="flex flex-col items-center gap-10 h-full justify-center">
                         <p className="medium-text">
@@ -59,6 +60,7 @@ export default function HomeUI({  timerType, setTimerType, updateTimer, currentM
                         className="page-transition-button mt-[20%]"
                         initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }}
                         onClick={onStart}
+                        transition={{ duration: 0.4, delay: 3 }}
                     >
                         Start
                     </motion.button>

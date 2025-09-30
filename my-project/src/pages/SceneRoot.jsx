@@ -13,6 +13,8 @@ import handleTimer from "../hooks/TimerSettings";
 import { CAMERA_POSES } from "../scenes/CameraPoses";
 import * as THREE from "three";
 import { SESSION } from "../constants/Sessions";
+import { AnimatePresence, motion } from "framer-motion";
+
 
 export default function Title() {
     const { timerType, currentMinutes, setTimerType, updateTimer } = handleTimer();
@@ -106,30 +108,34 @@ export default function Title() {
                 /> 
             </Canvas>
             {/* Overlays */}
-            {sessionState === SESSION.TITLE && (
-                <TitleUI
-                    onStart={() => setSessionState(SESSION.HOME)}
-                />
-            )}
-            {sessionState === SESSION.HOME && (
-                <HomeUI
-                    timerType={timerType}
-                    setTimerType={setTimerType}
-                    updateTimer={updateTimer}
-                    currentMinutes={currentMinutes}
-                    onStart={() => setSessionState(SESSION.START)}
-                />
-            )}
-            {(sessionState === SESSION.START || sessionState === SESSION.PLAY || sessionState === SESSION.PAUSE) && (
-                <StartSession
-                    timerType={timerType}
-                    setTimerType={setTimerType}
-                    currentMinutes={currentMinutes}
-                    onPause={() => setSessionState(SESSION.PAUSE)}
-                    onPlay={() => setSessionState(SESSION.PLAY)}
-                    sessionState={sessionState}
-                />
-            )}
+            <AnimatePresence modew="wait">
+                {sessionState === SESSION.TITLE && (
+                    <TitleUI
+                        onStart={() => setSessionState(SESSION.HOME)}
+                    />
+                )}
+
+                {sessionState === SESSION.HOME && (
+                    <HomeUI
+                        timerType={timerType}
+                        setTimerType={setTimerType}
+                        updateTimer={updateTimer}
+                        currentMinutes={currentMinutes}
+                        onStart={() => setSessionState(SESSION.START)}
+                    />
+                )}
+
+                {(sessionState === SESSION.START || sessionState === SESSION.PLAY || sessionState === SESSION.PAUSE) && (
+                    <StartSession
+                        timerType={timerType}
+                        setTimerType={setTimerType}
+                        currentMinutes={currentMinutes}
+                        onPause={() => setSessionState(SESSION.PAUSE)}
+                        onPlay={() => setSessionState(SESSION.PLAY)}
+                        sessionState={sessionState}
+                    />
+                )}
+            </AnimatePresence>
         </div>
     );
 }
