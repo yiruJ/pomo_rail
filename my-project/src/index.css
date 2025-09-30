@@ -14,7 +14,7 @@
   @apply text-9xl text-white font-quickSand font-extrabold;
 }
 
-.arrow-icon {
+.timer-controls {
   @apply text-white w-12 h-12 transition-transform duration-100 hover:scale-125;
 }
 
@@ -22,13 +22,13 @@
   @apply font-quickSand text-9xl left-30 top-1/2 absolute z-10 text-white font-medium -translate-y-1/2;
 }
 
-.start-button {
-  @apply font-quickSand text-6xl right-50 top-1/2 absolute z-10
-      text-white font-bold -translate-y-1/2 transform transition-transform 
+.page-transition-button {
+  @apply font-quickSand text-6xl z-10
+      text-white font-bold transform transition-transform 
         duration-100 hover:scale-125
 }
 
 .timer-panel {
-  @apply h-80 w-1/3 bg-red-50/40 z-10 absolute rounded-4xl border-4 border-white 
-         shadow-xl -translate-x-1/2
+  @apply h-5/12 w-10/12 bg-red-50/40 z-10 rounded-4xl border-4 border-white 
+         shadow-xl 
 }

@@ -1,22 +1,28 @@
 import { useGLTF, useTexture } from "@react-three/drei";
 import * as THREE from "three";
+import { useMemo } from "react";
 
 export default function TrackModel(props) {
-    // this hook loads the .glb file
-    const { scene } = useGLTF("/models/train_track.glb"); // put train.glb in /public/models
-
-    const txt = useTexture("/textures/train_track_txt.webp");
+    const { scene } = useGLTF("/models/track.glb");
+    const txt = useTexture("/textures/track.webp");
+    
     txt.flipY = false;
-    txt.colorSpace = THREE.SRGBColorSpace; // ensures correct colors
+    txt.colorSpace = THREE.SRGBColorSpace;
 
-    scene.traverse((obj) => {
-        if (obj.isMesh) {
-            obj.material = new THREE.MeshBasicMaterial({
-                map: txt,
-                toneMapped: false, // avoids washed-out colors
-            });
-        }
-    });
+    const clonedScene = useMemo(() => {
+        const clone = scene.clone();
+        
+        clone.traverse((obj) => {
+            if (obj.isMesh) {
+                obj.material = new THREE.MeshBasicMaterial({
+                    map: txt,
+                    toneMapped: false,
+                });
+            }
+        });
+        
+        return clone;
+    }, [scene, txt]);
 
-    return <primitive object={scene} {...props} />;
+    return <primitive object={clonedScene} {...props} />;
 }

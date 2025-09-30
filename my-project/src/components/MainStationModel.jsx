@@ -25,7 +25,6 @@ export default function MainStationModel(props) {
             } else if (name.includes("wizard")) {
                 obj.material = new THREE.MeshBasicMaterial({
                     map: textures.clockTower,
-                    flatShading: true,
                     toneMapped: false,
                 });
             }

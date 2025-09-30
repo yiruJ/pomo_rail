@@ -1,10 +1,5 @@
 import { useReducer } from "react";
-
-export const TIMER = { POMO: "pomo", BREAK: "break" };
-export const TIMER_CONFIG = {
-  [TIMER.POMO]:  { min: 10, max: 60, step: 5, initial: 25 },
-  [TIMER.BREAK]: { min:  5, max: 30, step: 5, initial:  5 },
-};
+import { TIMER, TIMER_CONFIG } from "../constants/Timers";
 
 const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
 
@@ -25,9 +20,6 @@ function reducer(state, action) {
       const delta = action.dir === "up" ? cfg.step : -cfg.step;
       const next = clamp(state.minutes[state.timerType] + delta, cfg.min, cfg.max);
       return { ...state, minutes: { ...state.minutes, [state.timerType]: next } };
-    }
-    case "START": {
-        console.log(state);
     }
     default:
       return state;
