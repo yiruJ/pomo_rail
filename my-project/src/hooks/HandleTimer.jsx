@@ -26,6 +26,9 @@ function reducer(state, action) {
       const next = clamp(state.minutes[state.timerType] + delta, cfg.min, cfg.max);
       return { ...state, minutes: { ...state.minutes, [state.timerType]: next } };
     }
+    case "START": {
+        console.log(state);
+    }
     default:
       return state;
   }
@@ -38,5 +41,6 @@ export default function handleTimer() {
     currentMinutes: state.minutes[state.timerType],
     setTimerType: (timerType) => dispatch({ type: "SET_TIMER_TYPE", timerType }),
     updateTimer: (dir) => dispatch({ type: "UPDATE", dir }),
+    startTimer: () => dispatch({type: "START"})
   };
 }

@@ -103,6 +103,7 @@ export default function Title() {
       {sessionState === SESSION.HOME && (
         <HomeUI
           timerType={timerType}
+          setTimerType={setTimerType}
           currentMinutes={currentMinutes}
           onStart={() => setSessionState(SESSION.START)}
         />
