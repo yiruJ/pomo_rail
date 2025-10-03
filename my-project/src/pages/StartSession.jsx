@@ -4,7 +4,7 @@ import { FaPlay } from "react-icons/fa";
 import { useRef, useState, useEffect } from "react";
 import { SESSION } from "../constants/Sessions";
 
-export default function StartSession({ timerType, setTimerType, currentMinutes, onPause, onPlay, sessionState }) {
+export default function StartSession({ timerType, setTimerType, currentMinutes, onPause, onPlay, sessionState, mainStationRef }) {
     const [remainingMins, setRemainingMins]  = useState(currentMinutes);
     const [remainingSecs, setRemainingSecs]  = useState(0);
 
@@ -26,10 +26,6 @@ export default function StartSession({ timerType, setTimerType, currentMinutes, 
                 setRemainingSecs(remainingSecs - 1);
             }
         }, 1000);
-    }
-
-    function openGate() {
-        
     }
     
     return (

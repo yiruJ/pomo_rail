@@ -1,10 +1,11 @@
 import { useGLTF, useTexture } from "@react-three/drei";
 import * as THREE from "three";
+import React, { forwardRef, useImperativeHandle, useRef, useEffect } from "react";
 
-export default function MainStationModel(props) {
+const MainStationModel = forwardRef((props, ref) => {
     // this hook loads the .glb file
     const { scene } = useGLTF("/models/main_station.glb"); // put train.glb in /public/models
-
+    const gateRef = useRef(null);
     const textures = {
         body : useTexture("/textures/main_station_body.webp"),
         base : useTexture("/textures/main_station_base.webp"),
@@ -16,10 +17,15 @@ export default function MainStationModel(props) {
         txt.colorSpace = THREE.SRGBColorSpace; // ensures correct colors
     })) 
 
+    const pivot = new THREE.Group();
+    pivot.name = "pivot";
+    scene.add(pivot);
+
     scene.traverse((obj) => {
         if (obj.isMesh) {
             obj.castShadow = true;
             const name = obj.name;
+            
             if (name.includes("screen")) {
                 obj.visible = false;
             } else if (name.includes("wizard")) {
@@ -29,6 +35,7 @@ export default function MainStationModel(props) {
                 });
             }
 
+            // Assign textures to objects
             if (name.includes("base") || name.includes("gate")) {
                 obj.material = new THREE.MeshStandardMaterial({
                     map: textures.base,
@@ -40,16 +47,28 @@ export default function MainStationModel(props) {
                     flatShading: true,
                     toneMapped: false,
                 });
-                // Ensure per-face normals (optional but helps)
+                
                 obj.material.needsUpdate = true;
             } else if (name.includes("body")) {
                 obj.material = new THREE.MeshStandardMaterial({
                     map: textures.body,
-                    toneMapped: false, // avoids washed-out colors
+                    toneMapped: false, 
                 });
-            } 
+            }
+
+            // Assign ref
+            if (name === "gate") gateRef.current = obj;
         }
     });
 
-    return <primitive object={scene} {...props} />;
-}
+    useImperativeHandle(ref, () => ({
+        rotateGate(rad) {
+            if (!gateRef.current) return;
+            gateRef.current.rotation.x -= rad;
+        }
+    }), []);
+
+    return <primitive object={scene} {...props}/>;
+});
+
+export default MainStationModel;

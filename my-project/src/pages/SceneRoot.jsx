@@ -10,15 +10,17 @@ import TitleUI from "./TitleUI";
 import HomeUI from "./HomeUI";
 import StartSession from "./StartSession";
 import handleTimer from "../hooks/TimerSettings";
-import { CAMERA_POSES } from "../scenes/CameraPoses";
+import OpenGate from "../movements/OpenGate";
+import { CAMERA_POSES } from "../constants/CameraPoses";
 import * as THREE from "three";
 import { SESSION } from "../constants/Sessions";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 
 
 export default function Title() {
     const { timerType, currentMinutes, setTimerType, updateTimer } = handleTimer();
     const camCtrlRef = useRef(null);
+    const mainStationRef = useRef(null);
     const [sessionState, setSessionState] = useState(SESSION.TITLE);
 
     function LoadTracks() {
@@ -46,13 +48,14 @@ export default function Title() {
                 <MainStationModel 
                     castShadow 
                     scale={1} 
-                    position={[0, 0, 0]} 
+                    position={[0, 0, -3]} 
                     rotation={[0, Math.PI, 0]}
+                    ref={mainStationRef}
                 />
                 <TrainModel 
                     castShadow 
-                    scale={1.5} 
-                    position={[-5, 1, 20]} 
+                    scale={1.7} 
+                    position={[-5, 1.3, 20]} 
                     rotation={[0, Math.PI, 0]}
                 />
                 
@@ -106,7 +109,9 @@ export default function Title() {
                     enableZoom={true} 
                     enableRotate={true}
                 /> 
+                <OpenGate gateRef={mainStationRef} active={sessionState === SESSION.START}/>
             </Canvas>
+
             {/* Overlays */}
             <AnimatePresence modew="wait">
                 {sessionState === SESSION.TITLE && (
@@ -133,6 +138,7 @@ export default function Title() {
                         onPause={() => setSessionState(SESSION.PAUSE)}
                         onPlay={() => setSessionState(SESSION.PLAY)}
                         sessionState={sessionState}
+                        mainStationRef={mainStationRef}
                     />
                 )}
             </AnimatePresence>
