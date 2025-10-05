@@ -16,12 +16,12 @@ export function MainStationMovement({ mainStationRef, sessionState }) {
     useFrame((_, delta) => {
         if (!move) return;
         if ((sessionState === SESSION.START || sessionState === SESSION.PLAY)) {
-            speedRef.current = Math.min(12, speedRef.current + 0.007);
+            speedRef.current = Math.min(6, speedRef.current + 0.04);
         } else if (sessionState === SESSION.PAUSE) {
-            speedRef.current = Math.max(0, speedRef.current - 0.007);
+            speedRef.current = Math.max(0, speedRef.current - 0.01);
         }
 
-        mainStationRef.current.moveStation(speedRef.current + delta);
+        mainStationRef.current.moveStation(speedRef.current * delta);
     });
 
   return null;

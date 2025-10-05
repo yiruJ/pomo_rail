@@ -17,7 +17,7 @@ export default function TrackMovement({ trackRefs, sessionState }) {
     useFrame((_, delta) => {
         if (!move) return;
         if ((sessionState === SESSION.START || sessionState === SESSION.PLAY)) {
-            speedRef.current = Math.min(18, speedRef.current + 0.1);
+            speedRef.current = Math.min(18, speedRef.current + 0.2);
         } else if (sessionState === SESSION.PAUSE) {
             speedRef.current = Math.max(0, speedRef.current - 0.2);
         }
