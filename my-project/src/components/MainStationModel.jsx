@@ -3,9 +3,9 @@ import * as THREE from "three";
 import React, { forwardRef, useImperativeHandle, useRef, useEffect } from "react";
 
 const MainStationModel = forwardRef((props, ref) => {
-    // this hook loads the .glb file
     const { scene } = useGLTF("/models/main_station.glb"); // put train.glb in /public/models
     const gateRef = useRef(null);
+    const mainStationRefs = useRef([]);
     const textures = {
         body : useTexture("/textures/main_station_body.webp"),
         base : useTexture("/textures/main_station_base.webp"),
@@ -15,11 +15,7 @@ const MainStationModel = forwardRef((props, ref) => {
     Object.values(textures).forEach((txt => {
         txt.flipY = false;
         txt.colorSpace = THREE.SRGBColorSpace; // ensures correct colors
-    })) 
-
-    const pivot = new THREE.Group();
-    pivot.name = "pivot";
-    scene.add(pivot);
+    }))
 
     scene.traverse((obj) => {
         if (obj.isMesh) {
@@ -58,6 +54,7 @@ const MainStationModel = forwardRef((props, ref) => {
 
             // Assign ref
             if (name === "gate") gateRef.current = obj;
+            mainStationRefs.current.push(obj);
         }
     });
 
@@ -65,6 +62,11 @@ const MainStationModel = forwardRef((props, ref) => {
         rotateGate(rad) {
             if (!gateRef.current) return;
             gateRef.current.rotation.x -= rad;
+        },
+        moveStation(dist) {
+            mainStationRefs.current.forEach((obj) => {
+                obj.position.x -= dist;
+            })
         }
     }), []);
 

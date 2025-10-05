@@ -2,7 +2,6 @@ import { useGLTF, useTexture } from "@react-three/drei";
 import * as THREE from "three";
 
 export default function MiniStationModel(props) {
-    // this hook loads the .glb file
     const { scene } = useGLTF("/models/mini_train_st.glb"); // put train.glb in /public/models
 
     const txt = useTexture("/textures/mini_train_st_txt.webp");

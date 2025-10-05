@@ -10,7 +10,7 @@ export default function HomeUI({  timerType, setTimerType, updateTimer, currentM
         const delay = setTimeout(() => setShow(true), 1500);
         return () => clearTimeout(delay);
     }, []);
-    
+
     return (
     <>
       {show && (
@@ -33,7 +33,7 @@ export default function HomeUI({  timerType, setTimerType, updateTimer, currentM
             </motion.div>
           </AnimatePresence>
 
-          <div className="fixed inset-0 flex flex-col items-center w-6/12 p-[1%]">
+          <div className="fixed inset-0 flex flex-col items-center w-6/12 p-[1%] mt-3">
             {/* timer types */}
             <AnimatePresence>
               <motion.div

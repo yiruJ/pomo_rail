@@ -15,54 +15,62 @@ import { CAMERA_POSES } from "../constants/CameraPoses";
 import * as THREE from "three";
 import { SESSION } from "../constants/Sessions";
 import { AnimatePresence } from "framer-motion";
+import { MainStationMovement } from "../movements/MainStationMovement";
+import TrackMovement from "../movements/TrackMovement";
 
+function LoadTracks({ trackRefs }) {
+    return (
+        <>
+            {Array.from({ length: 40 }, (_, i) => {
+                return (
+                    <group
+                        key={`track-${i}`}
+                        position={[-240 + i * 17.7, 0, 18.5]}
+                        // position={[0, 0, 18.5]}
+                        rotation={[0, Math.PI, 0]}
+                        scale={1.5}
+                        ref={(track) => {
+                            if (track && !trackRefs.current.includes(track)) {
+                                trackRefs.current.push(track);
+                            }
+                        }}
+                    >
+                        <TrackModel />
+                    </group>
+                );
+            })}
+        </>
+    );
+}
+
+function LoadModels( {mainStationRef, trackRefs}) {
+    return (
+        <>
+            <MainStationModel 
+                castShadow 
+                scale={1} 
+                position={[0, 0, -3]} 
+                rotation={[0, Math.PI, 0]}
+                ref={mainStationRef}
+            />
+            <TrainModel 
+                castShadow 
+                scale={1.7} 
+                position={[-5, 1.3, 20]} 
+                rotation={[0, Math.PI, 0]}
+            />
+            
+            <LoadTracks trackRefs={trackRefs}/>
+        </>
+    )
+}
 
 export default function Title() {
     const { timerType, currentMinutes, setTimerType, updateTimer } = handleTimer();
     const camCtrlRef = useRef(null);
     const mainStationRef = useRef(null);
+    const trackRefs = useRef([]);
     const [sessionState, setSessionState] = useState(SESSION.TITLE);
-
-    function LoadTracks() {
-        return (
-            <>
-                {Array.from({ length: 40 }, (_, i) => {
-                    return (
-                        <group
-                            key={`track-${i}`}
-                            position={[-240 + i * 17.7, 0, 18.5]}
-                            rotation={[0, Math.PI, 0]}
-                            scale={1.5}
-                        >
-                            <TrackModel />
-                        </group>
-                    );
-                })}
-            </>
-        );
-    }
-
-    function LoadModels() {
-        return (
-            <>
-                <MainStationModel 
-                    castShadow 
-                    scale={1} 
-                    position={[0, 0, -3]} 
-                    rotation={[0, Math.PI, 0]}
-                    ref={mainStationRef}
-                />
-                <TrainModel 
-                    castShadow 
-                    scale={1.7} 
-                    position={[-5, 1.3, 20]} 
-                    rotation={[0, Math.PI, 0]}
-                />
-                
-                <LoadTracks/>
-            </>
-        )
-    }
 
     function handleCamera(inst) {
         if (!inst) return;   
@@ -95,7 +103,7 @@ export default function Title() {
                 gl={{ shadowMap: { enabled: true, type: THREE.PCFSoftShadowMap } }}>
                 {/* <CameraLogger /> */}
                 <WorldLights/>
-                <LoadModels/>
+                <LoadModels mainStationRef={mainStationRef} trackRefs={trackRefs}/>
                 <Environment preset="lobby" /> 
                 <Walls/>
                 <CameraControls  
@@ -110,10 +118,12 @@ export default function Title() {
                     enableRotate={true}
                 /> 
                 <OpenGate gateRef={mainStationRef} active={sessionState === SESSION.START}/>
+                <MainStationMovement mainStationRef={mainStationRef} sessionState={sessionState} />
+                <TrackMovement trackRefs={trackRefs} sessionState={sessionState} />
             </Canvas>
 
             {/* Overlays */}
-            <AnimatePresence modew="wait">
+            <AnimatePresence mode="wait">
                 {sessionState === SESSION.TITLE && (
                     <TitleUI
                         onStart={() => setSessionState(SESSION.HOME)}
@@ -138,7 +148,6 @@ export default function Title() {
                         onPause={() => setSessionState(SESSION.PAUSE)}
                         onPlay={() => setSessionState(SESSION.PLAY)}
                         sessionState={sessionState}
-                        mainStationRef={mainStationRef}
                     />
                 )}
             </AnimatePresence>
