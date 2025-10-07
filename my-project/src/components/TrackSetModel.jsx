@@ -2,8 +2,8 @@ import { useGLTF, useTexture } from "@react-three/drei";
 import * as THREE from "three";
 import { useMemo } from "react";
 
-export default function TrackModel(props) {
-    const { scene } = useGLTF("/models/track.glb");
+export default function TrackSetModel(props) {
+    const { scene } = useGLTF("/models/trackSet.glb");
     const txt = useTexture("/textures/track.webp");
     
     txt.flipY = false;

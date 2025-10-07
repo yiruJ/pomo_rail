@@ -1,11 +1,11 @@
-import { Canvas } from "@react-three/fiber";
+import { Canvas, useFrame } from "@react-three/fiber";
 import { Environment, CameraControls } from "@react-three/drei";
 import { useRef, useState, useEffect } from "react";
 import { WorldLights } from "../scenes/WorldLights";
 import { Walls } from "../scenes/Walls";
 import MainStationModel from "../components/MainStationModel";
 import TrainModel from "../components/TrainModel";
-import TrackModel from "../components/TrackModel";
+import TrackSetModel from "../components/TrackSetModel";
 import TitleUI from "./TitleUI";
 import HomeUI from "./HomeUI";
 import StartSession from "./StartSession";
@@ -16,61 +16,76 @@ import * as THREE from "three";
 import { SESSION } from "../constants/Sessions";
 import { AnimatePresence } from "framer-motion";
 import { MainStationMovement } from "../movements/MainStationMovement";
+import SpeedController from "../movements/SpeedController";
 import TrackMovement from "../movements/TrackMovement";
 
-function LoadTracks({ trackRefs }) {
+function LoadModels( {mainStationRef, trackSetArrRef, isVisible}) {
     return (
         <>
-            {Array.from({ length: 40 }, (_, i) => {
-                return (
-                    <group
-                        key={`track-${i}`}
-                        position={[-240 + i * 17.7, 0, 18.5]}
-                        // position={[0, 0, 18.5]}
-                        rotation={[0, Math.PI, 0]}
-                        scale={1.5}
-                        ref={(track) => {
-                            if (track && !trackRefs.current.includes(track)) {
-                                trackRefs.current.push(track);
-                            }
-                        }}
-                    >
-                        <TrackModel />
-                    </group>
-                );
-            })}
-        </>
-    );
-}
-
-function LoadModels( {mainStationRef, trackRefs}) {
-    return (
-        <>
-            <MainStationModel 
-                castShadow 
-                scale={1} 
-                position={[0, 0, -3]} 
-                rotation={[0, Math.PI, 0]}
-                ref={mainStationRef}
-            />
+            {isVisible.mainStation && (
+                <MainStationModel 
+                    castShadow 
+                    scale={1} 
+                    position={[0, -1, -3]} 
+                    rotation={[0, Math.PI, 0]}
+                    ref={mainStationRef}
+                />
+            )}
             <TrainModel 
                 castShadow 
-                scale={1.7} 
-                position={[-5, 1.3, 20]} 
+                scale={1} 
+                position={[-10, 1.3, 20]} 
                 rotation={[0, Math.PI, 0]}
             />
             
-            <LoadTracks trackRefs={trackRefs}/>
+            <LoadTrackSets trackSetArrRef={trackSetArrRef} />
         </>
     )
+}
+
+function LoadTrackSets({ trackSetArrRef }) {
+    return (
+        <>
+            {Array.from({ length: 3}, (_, i) => (
+                <TrackSetModel
+                    key={i}
+                    ref={(trackSet) => {
+                        if (trackSet) trackSetArrRef.current[i] = trackSet;
+                    }}
+                    position={[i * 212.5 - 200, 0, 18.5]}
+                    rotation={[0, Math.PI, 0]}
+                    scale={1}
+                />
+            ))
+
+            }
+        </>
+    )
+}
+
+function RotateTrackSets({ trackSetArrRef }) {
+    useFrame((_, delta) => {
+        trackSetArrRef.current.forEach((trackSet) => {
+            if (trackSet.position.x >= 212.5 + 225) {
+                trackSet.position.x = -200.1;
+                return;
+            }
+        })
+    })
 }
 
 export default function Title() {
     const { timerType, currentMinutes, setTimerType, updateTimer } = handleTimer();
     const camCtrlRef = useRef(null);
     const mainStationRef = useRef(null);
-    const trackRefs = useRef([]);
+    const trackSetArrRef = useRef([]);
+    const speedRef = useRef(0);
     const [sessionState, setSessionState] = useState(SESSION.TITLE);
+    const [isVisible, setIsVisible] = useState({
+        mainStation: true,
+        train: true,
+        tracks: true,
+    });
 
     function handleCamera(inst) {
         if (!inst) return;   
@@ -103,7 +118,7 @@ export default function Title() {
                 gl={{ shadowMap: { enabled: true, type: THREE.PCFSoftShadowMap } }}>
                 {/* <CameraLogger /> */}
                 <WorldLights/>
-                <LoadModels mainStationRef={mainStationRef} trackRefs={trackRefs}/>
+                <LoadModels mainStationRef={mainStationRef} trackSetArrRef={trackSetArrRef} isVisible={isVisible}/>
                 <Environment preset="lobby" /> 
                 <Walls/>
                 <CameraControls  
@@ -116,10 +131,12 @@ export default function Title() {
                     enablePan={true}
                     enableZoom={true} 
                     enableRotate={true}
-                /> 
+                />
+                <SpeedController sessionState={sessionState} speedRef={speedRef}/>
                 <OpenGate gateRef={mainStationRef} active={sessionState === SESSION.START}/>
-                <MainStationMovement mainStationRef={mainStationRef} sessionState={sessionState} />
-                <TrackMovement trackRefs={trackRefs} sessionState={sessionState} />
+                <MainStationMovement speedRef={speedRef} mainStationRef={mainStationRef} sessionState={sessionState} setIsVisible={setIsVisible} />
+                <TrackMovement speedRef={speedRef} trackSetArrRef={trackSetArrRef}/>
+                <RotateTrackSets trackSetArrRef={trackSetArrRef}/>
             </Canvas>
 
             {/* Overlays */}

@@ -12,6 +12,25 @@ const MainStationModel = forwardRef((props, ref) => {
         clockTower : useTexture("/textures/main_station_clock_tower.webp"),
     }
 
+    // Remove once unmounted
+    useEffect(() => {
+        return () => {
+            scene.traverse((child) => {
+            if (child.isMesh) {
+                if (child.geometry) child.geometry.dispose();
+                if (child.material) {
+                if (Array.isArray(child.material)) {
+                    child.material.forEach((m) => m.dispose());
+                } else {
+                    child.material.dispose();
+                }
+                }
+            }
+            });
+            console.log("MainStationModel disposed manually");
+        };
+    }, [scene]);
+
     Object.values(textures).forEach((txt => {
         txt.flipY = false;
         txt.colorSpace = THREE.SRGBColorSpace; // ensures correct colors
@@ -67,6 +86,9 @@ const MainStationModel = forwardRef((props, ref) => {
             mainStationRefs.current.forEach((obj) => {
                 obj.position.x -= dist;
             })
+        },
+        isOutOfFrame() {
+            if (gateRef.current.position.x < -100) return true;
         }
     }), []);
 
