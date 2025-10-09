@@ -9,14 +9,20 @@ export default function TreeOneModel(props) {
     txt.flipY = false;
     txt.colorSpace = THREE.SRGBColorSpace; // ensures correct colors
 
-    scene.traverse((obj) => {
-        if (obj.isMesh) {
-            obj.material = new THREE.MeshBasicMaterial({
-                map: txt,
-                toneMapped: false, // avoids washed-out colors
-            });
-        }
-    });
+    const clonedScene = useMemo(() => {
+        const clone = scene.clone();
+        
+        clone.traverse((obj) => {
+            if (obj.isMesh) {
+                obj.material = new THREE.MeshBasicMaterial({
+                    map: txt,
+                    toneMapped: false, 
+                });
+            }
+        });
 
-    return <primitive object={scene} {...props} />;
+        return clone;
+    }, [scene, txt]);
+
+    return <primitive object={clonedScene} {...props} />;
 }
