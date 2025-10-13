@@ -2,9 +2,10 @@ import MainStationModel from "../components/MainStationModel";
 import TrainModel from "../components/TrainModel";
 import TrackSetModel from "../components/TrackSetModel";
 import TreeTwoModel from "../components/TreeTwoModel";
+import MiniStationModel from "../components/MiniStationModel";
 import { useRef } from "react";
 
-export default function LoadModels( {mainStationRef, trackSetArrRef, treeSetArrRef, isVisible} ) {
+export default function LoadModels( {miniStationRef, mainStationRef, trackSetArrRef, treeSetArrRef, isVisible} ) {
     return (
         <>
             {isVisible.mainStation && (
@@ -14,6 +15,16 @@ export default function LoadModels( {mainStationRef, trackSetArrRef, treeSetArrR
                     position={[0, -1, -3]} 
                     rotation={[0, Math.PI, 0]}
                     ref={mainStationRef}
+                />
+            )}
+
+            {isVisible.miniStation && (
+                <MiniStationModel 
+                    castShadow 
+                    scale={1.5} 
+                    position={[-150, 0, 10]} 
+                    rotation={[0, Math.PI, 0]}
+                    ref={miniStationRef}
                 />
             )}
 

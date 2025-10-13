@@ -16,6 +16,7 @@ import { MainStationMovement } from "../movements/MainStationMovement";
 import SpeedController from "../movements/SpeedController";
 import TrackMovement from "../movements/TrackMovement";
 import TreeMovement from "../movements/TreeMovement";
+import { MiniStationMovement } from "../movements/MiniStationMovement";
 import LoadModels from "../scenes/LoadModels";
 import UpdateTrackSetPos from "../scenes/UpdateTrackSetPos";
 import UpdateTreeSetPos from "../scenes/UpdateTreeSetPos";
@@ -26,6 +27,7 @@ export default function Title() {
     const { timerType, currentMinutes, setTimerType, updateTimer } = handleTimer();
     const camCtrlRef = useRef(null);
     const mainStationRef = useRef(null);
+    const miniStationRef = useRef(null);
     const trackSetArrRef = useRef([]);
     const treeSetArrRef = useRef([]);
     const speedRef = useRef(0);
@@ -35,7 +37,9 @@ export default function Title() {
         train: true,
         tracks: true,
         trees: false,
+        miniStation: true,
     });
+    const [moveStation, setMoveStation] = useState(false);
 
     function handleCamera(inst) {
         if (!inst) return;   
@@ -68,7 +72,7 @@ export default function Title() {
                 gl={{ shadowMap: { enabled: true, type: THREE.PCFSoftShadowMap } }}>
                 {/* <CameraLogger /> */}
                 <WorldLights/>
-                <LoadModels mainStationRef={mainStationRef} trackSetArrRef={trackSetArrRef} treeSetArrRef={treeSetArrRef} isVisible={isVisible}/>
+                <LoadModels miniStationRef={miniStationRef} mainStationRef={mainStationRef} trackSetArrRef={trackSetArrRef} treeSetArrRef={treeSetArrRef} isVisible={isVisible}/>
                 <Environment preset="lobby" /> 
                 <Walls/>
                 <CameraControls  
@@ -85,6 +89,7 @@ export default function Title() {
                 <SpeedController sessionState={sessionState} speedRef={speedRef}/>
                 <OpenGate gateRef={mainStationRef} active={sessionState === SESSION.START}/>
                 <MainStationMovement speedRef={speedRef} mainStationRef={mainStationRef} setIsVisible={setIsVisible} />
+                <MiniStationMovement miniStationRef={miniStationRef} speedRef={speedRef} setIsVisible={setIsVisible} moveStation={moveStation}/>
                 <TreeMovement speedRef={speedRef} treeSetArrRef={treeSetArrRef} sessionState={sessionState} setIsVisible={setIsVisible}/>
                 <TrackMovement speedRef={speedRef} trackSetArrRef={trackSetArrRef}/>
                 <UpdateTrackSetPos trackSetArrRef={trackSetArrRef}/>
@@ -117,6 +122,8 @@ export default function Title() {
                         onPlay={() => setSessionState(SESSION.PLAY)}
                         sessionState={sessionState}
                         setSessionState={setSessionState}
+                        setIsVisible={setIsVisible}
+                        setMoveStation={setMoveStation}
                     />
                 )}
 

@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 
 export default function SpeedController({ sessionState, speedRef }) {
     const [move, setMove] = useState(false);
-    console.log(sessionState);
     useEffect(() => {
         if (sessionState === SESSION.START) {
             const delay = setTimeout(() => setMove(true), 2000);

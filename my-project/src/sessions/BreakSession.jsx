@@ -40,7 +40,7 @@ export default function BreakSession({ setTimerType, currentMinutes, onPause, on
                         key="timer-panels"
                         className="timer-panel mt-[1%]"
                         style={{ left: "20%", top: "12%" }}
-                        initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }} transition={{ duration: 0.4 }}
+                        initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
                     >
                     <div className="flex flex-col items-center gap-10 h-full justify-center">
                         <p className="medium-text">

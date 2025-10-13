@@ -1,21 +1,54 @@
 import { useGLTF, useTexture } from "@react-three/drei";
+import { forwardRef, useImperativeHandle, useRef } from "react";
 import * as THREE from "three";
 
-export default function MiniStationModel(props) {
-    const { scene } = useGLTF("/models/mini_train_st.glb"); // put train.glb in /public/models
+const MiniStationModel = forwardRef((props, ref) => {
+    const { scene } = useGLTF("/models/mini_station.glb"); // put train.glb in /public/models
+    const miniStationRefs = useRef([]);
 
-    const txt = useTexture("/textures/mini_train_st_txt.webp");
-    txt.flipY = false;
-    txt.colorSpace = THREE.SRGBColorSpace; // ensures correct colors
+    const textures = {
+        body : useTexture("/textures/mini_station_body.webp"),
+        base : useTexture("/textures/mini_station_base.webp"),
+    }
+
+    Object.values(textures).forEach((txt => {
+        txt.flipY = false;
+        txt.colorSpace = THREE.SRGBColorSpace; // ensures correct colors
+    }))
 
     scene.traverse((obj) => {
         if (obj.isMesh) {
-            obj.material = new THREE.MeshBasicMaterial({
-                map: txt,
-                toneMapped: false, // avoids washed-out colors
-            });
+            const name = obj.name;
+            
+            if (name.includes("base")) {
+                obj.material = new THREE.MeshStandardMaterial({
+                    map: textures.base,
+                    toneMapped: false, // avoids washed-out colors
+                });
+            } else {
+                obj.material = new THREE.MeshStandardMaterial({
+                    map: textures.body,
+                    toneMapped: false, // avoids washed-out colors
+                });
+            }
+
+            miniStationRefs.current.push(obj);
         }
     });
 
+    useImperativeHandle(ref, () => ({
+        moveStation(dist) {
+            console.log(miniStationRefs.current);
+            miniStationRefs.current.forEach((obj) => {
+                obj.position.x -= dist;
+            })
+        },
+        isOutOfFrame() {
+            if (miniStationRefs.current[0].position.x > 100) return true;
+        }
+    }), [])
+
     return <primitive object={scene} {...props} />;
-}
+})
+
+export default MiniStationModel;

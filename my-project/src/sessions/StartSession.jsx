@@ -5,7 +5,7 @@ import { useRef, useState, useEffect } from "react";
 import { SESSION } from "../constants/Sessions";
 import { TIMER } from "../constants/Timers";
 
-export default function StartSession({ timerType, setTimerType, currentMinutes, onPause, onPlay, sessionState, setSessionState }) {
+export default function StartSession({ setTimerType, currentMinutes, onPause, onPlay, sessionState, setSessionState, setIsVisible, setMoveStation }) {
     const [remainingMins, setRemainingMins]  = useState(currentMinutes);
     const [remainingSecs, setRemainingSecs]  = useState(0);
 
@@ -26,12 +26,16 @@ export default function StartSession({ timerType, setTimerType, currentMinutes, 
             } else {
                 setRemainingSecs(prev => prev - 1);
             }
-        }, 100);
+        }, 1000);
 
         return () => clearInterval(timer);
     }, [remainingSecs, remainingMins, sessionState])
 
-    
+    useEffect(() => {
+        if (remainingSecs === 10 & remainingMins === 0) {
+            setMoveStation(true);
+        }
+    }, [remainingMins, remainingSecs]);
 
     return (
         <>  
@@ -42,7 +46,7 @@ export default function StartSession({ timerType, setTimerType, currentMinutes, 
                         key="timer-panel"
                         className="timer-panel mt-[1%]"
                         style={{ left: "20%", top: "12%" }}
-                        initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }} transition={{ duration: 0.4 }}
+                        initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.4 }}
                     >
                     <div className="flex flex-col items-center gap-10 h-full justify-center">
                         <p className="medium-text">
