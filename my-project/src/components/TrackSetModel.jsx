@@ -1,6 +1,6 @@
 import { useGLTF, useTexture } from "@react-three/drei";
 import * as THREE from "three";
-import { useMemo } from "react";
+import { useMemo, useEffect } from "react";
 
 export default function TrackSetModel(props) {
     const { scene } = useGLTF("/models/trackSet.glb");

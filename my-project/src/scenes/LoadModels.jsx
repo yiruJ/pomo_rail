@@ -49,7 +49,7 @@ function LoadTrackSets({ trackSetArrRef }) {
                     ref={(trackSet) => {
                         if (trackSet) trackSetArrRef.current[i] = trackSet;
                     }}
-                    position={[i * 212.5 - 200, 0, 18.5]}
+                    position={[i * 106.3 - 106.3, 0, 18.5]}
                     rotation={[0, Math.PI, 0]}
                     scale={1}
                 />

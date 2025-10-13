@@ -1,5 +1,5 @@
 import { useGLTF, useTexture } from "@react-three/drei";
-import { forwardRef, useImperativeHandle, useRef } from "react";
+import { forwardRef, useImperativeHandle, useRef, useEffect } from "react";
 import * as THREE from "three";
 
 const MiniStationModel = forwardRef((props, ref) => {
@@ -16,25 +16,28 @@ const MiniStationModel = forwardRef((props, ref) => {
         txt.colorSpace = THREE.SRGBColorSpace; // ensures correct colors
     }))
 
-    scene.traverse((obj) => {
-        if (obj.isMesh) {
-            const name = obj.name;
-            
-            if (name.includes("base")) {
-                obj.material = new THREE.MeshStandardMaterial({
-                    map: textures.base,
-                    toneMapped: false, // avoids washed-out colors
-                });
-            } else {
-                obj.material = new THREE.MeshStandardMaterial({
-                    map: textures.body,
-                    toneMapped: false, // avoids washed-out colors
-                });
+    useEffect(() => {
+        scene.traverse((obj) => {
+            if (obj.isMesh) {
+                const name = obj.name;
+                
+                if (name.includes("base")) {
+                    obj.material = new THREE.MeshStandardMaterial({
+                        map: textures.base,
+                        toneMapped: false, // avoids washed-out colors
+                    });
+                } else {
+                    obj.material = new THREE.MeshStandardMaterial({
+                        map: textures.body,
+                        toneMapped: false, // avoids washed-out colors
+                    });
+                }
+    
+                miniStationRefs.current.push(obj);
             }
+        });
+    }, [scene])
 
-            miniStationRefs.current.push(obj);
-        }
-    });
 
     useImperativeHandle(ref, () => ({
         moveStation(dist) {

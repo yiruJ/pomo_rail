@@ -4,6 +4,7 @@ export function MainStationMovement({ mainStationRef, speedRef, setIsVisible }) 
     useFrame((_, delta) => {
         const station = mainStationRef.current;
         if (!station) return;
+            const distance = speedRef.current * delta;
 
         if (mainStationRef.current.isOutOfFrame()) {
             setIsVisible(prev => ({
@@ -13,7 +14,7 @@ export function MainStationMovement({ mainStationRef, speedRef, setIsVisible }) 
 
             return;
         }
-        mainStationRef.current.moveStation(speedRef.current * delta * 0.17);
+        mainStationRef.current.moveStation(distance);
     });
 
   return null;
