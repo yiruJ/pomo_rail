@@ -5,39 +5,39 @@ import { useRef, useState, useEffect } from "react";
 import { SESSION } from "../constants/Sessions";
 import { TIMER } from "../constants/Timers";
 
-export default function PauseSession({ timerType, setTimerType, currentMinutes, onPause, onPlay, sessionState, switchSessionRef }) {
+export default function BreakSession({ setTimerType, currentMinutes, onPause, onResume, sessionState, setSessionState }) {
     const [remainingMins, setRemainingMins]  = useState(currentMinutes);
     const [remainingSecs, setRemainingSecs]  = useState(0);
-
-    function StartTimer() {
-        setTimeout(() => {
-            if (sessionState === SESSION.PAUSE) return;
-
-            if (remainingSecs === 0) {
-                setRemainingMins(remainingMins - 1);
-                setRemainingSecs(59);
-            } else {
-                setRemainingSecs(remainingSecs - 1);
-            }
-        }, 1000);
-    }
+    
+    useEffect(() => {
+        if (remainingSecs === 0 && remainingMins === 0) {
+            setTimerType(TIMER.POMO);
+            setSessionState(SESSION.PLAY);
+        } 
+    }, [remainingSecs]);
 
     useEffect(() => {
-        return (() => {
-            if (remainingSecs === 0 && remainingMins === 0) {
-                switchSessionRef.current = true;
+        if (sessionState === SESSION.PAUSE_BREAK) return;
+
+        const timer = setInterval(() => {
+            if (remainingSecs === 0) {
+                setRemainingMins(prev => prev - 1);
+                setRemainingSecs(59);
+            } else {
+                setRemainingSecs(prev => prev - 1);
             }
-        })
-    }, [remainingSecs]);
+        }, 100);
+
+        return () => clearInterval(timer);
+    }, [remainingSecs, remainingMins, sessionState])
 
     return (
         <>  
-            <StartTimer/>
             <div className="fixed inset-0 flex flex-col items-center w-6/12 p-[1%]">
                 {/* timer panel */}
                 <AnimatePresence mode="wait">
                     <motion.div
-                        key="timer-panel"
+                        key="timer-panels"
                         className="timer-panel mt-[1%]"
                         style={{ left: "20%", top: "12%" }}
                         initial={{ opacity: 0, y: 12 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -16 }} transition={{ duration: 0.4 }}
@@ -47,14 +47,14 @@ export default function PauseSession({ timerType, setTimerType, currentMinutes, 
                             {remainingMins} : {remainingSecs < 10 ? "0" + remainingSecs : remainingSecs}
                         </p>
                         <AnimatePresence mode="wait">
-                            {sessionState === SESSION.PAUSE ? (
+                            {sessionState === SESSION.PAUSE_BREAK ? (
                                 <motion.button
-                                    key="play"
+                                    key="resume"
                                     initial={{ opacity: 0, scale: 0.9 }}
                                     animate={{ opacity: 1, scale: 1 }}
                                     exit={{ opacity: 0, scale: 0.9 }}
                                     transition={{ duration: 0.2 }}
-                                    onClick={onPlay}
+                                    onClick={onResume}
                                 >
                                     <FaPlay className="timer-controls" />
                                 </motion.button>

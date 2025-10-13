@@ -5,34 +5,36 @@ import { useRef, useState, useEffect } from "react";
 import { SESSION } from "../constants/Sessions";
 import { TIMER } from "../constants/Timers";
 
-export default function StartSession({ timerType, setTimerType, currentMinutes, onPause, onPlay, sessionState, switchSessionRef }) {
+export default function StartSession({ timerType, setTimerType, currentMinutes, onPause, onPlay, sessionState, setSessionState }) {
     const [remainingMins, setRemainingMins]  = useState(currentMinutes);
     const [remainingSecs, setRemainingSecs]  = useState(0);
 
-    function StartTimer() {
-        setTimeout(() => {
-            if (sessionState === SESSION.PAUSE) return;
+    useEffect(() => {
+        if (remainingSecs === 0 && remainingMins === 0) {
+            setTimerType(TIMER.BREAK);
+            setSessionState(SESSION.BREAK);
+        }
+    }, [remainingSecs]);
+    
+    useEffect(() => {
+        if (sessionState === SESSION.PAUSE_START) return;
 
+        const timer = setInterval(() => {
             if (remainingSecs === 0) {
-                setRemainingMins(remainingMins - 1);
+                setRemainingMins(prev => prev - 1);
                 setRemainingSecs(59);
             } else {
-                setRemainingSecs(remainingSecs - 1);
+                setRemainingSecs(prev => prev - 1);
             }
-        }, 1000);
-    }
+        }, 100);
 
-    useEffect(() => {
-        return (() => {
-            if (remainingSecs === 0 && remainingMins === 0) {
-                switchSessionRef.current = true;
-            }
-        })
-    }, [remainingSecs]);
+        return () => clearInterval(timer);
+    }, [remainingSecs, remainingMins, sessionState])
+
+    
 
     return (
         <>  
-            <StartTimer/>
             <div className="fixed inset-0 flex flex-col items-center w-6/12 p-[1%]">
                 {/* timer panel */}
                 <AnimatePresence mode="wait">
@@ -47,7 +49,7 @@ export default function StartSession({ timerType, setTimerType, currentMinutes, 
                             {remainingMins} : {remainingSecs < 10 ? "0" + remainingSecs : remainingSecs}
                         </p>
                         <AnimatePresence mode="wait">
-                            {sessionState === SESSION.PAUSE ? (
+                            {sessionState === SESSION.PAUSE_START ? (
                                 <motion.button
                                     key="play"
                                     initial={{ opacity: 0, scale: 0.9 }}

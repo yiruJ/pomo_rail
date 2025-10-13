@@ -1,10 +1,12 @@
-import { useFrame } from "@react-three/fiber";
+import { useRef, useState, useEffect, useCallback } from "react";
 import { SESSION } from "../constants/Sessions";
 
 export default function HandleSession({setSessionState, sessionState, switchSessionRef}) {
-  useFrame((_, delta) => {
-    if (switchSessionRef.current === true) {
+  useEffect(() => {
+    if (switchSessionRef.current === true && (sessionState === SESSION.PLAY || sessionState === SESSION.START) ) {
       setSessionState(SESSION.BREAK);
     }
-  })
+
+    switchSessionRef.current = false;
+  }, [switchSessionRef.current])
 }

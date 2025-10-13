@@ -19,7 +19,8 @@ import TreeMovement from "../movements/TreeMovement";
 import LoadModels from "../scenes/LoadModels";
 import UpdateTrackSetPos from "../scenes/UpdateTrackSetPos";
 import UpdateTreeSetPos from "../scenes/UpdateTreeSetPos";
-import HandleSession from "../sessions/HandleSession";
+import BreakSession from "../sessions/BreakSession";
+import { TIMER } from "../constants/Timers";
 
 export default function Title() {
     const { timerType, currentMinutes, setTimerType, updateTimer } = handleTimer();
@@ -28,7 +29,6 @@ export default function Title() {
     const trackSetArrRef = useRef([]);
     const treeSetArrRef = useRef([]);
     const speedRef = useRef(0);
-    const switchSessionRef = useRef(false);
     const [sessionState, setSessionState] = useState(SESSION.TITLE);
     const [isVisible, setIsVisible] = useState({
         mainStation: true,
@@ -89,7 +89,6 @@ export default function Title() {
                 <TrackMovement speedRef={speedRef} trackSetArrRef={trackSetArrRef}/>
                 <UpdateTrackSetPos trackSetArrRef={trackSetArrRef}/>
                 <UpdateTreeSetPos treeSetArrRef={treeSetArrRef}/>
-                <HandleSession setSessionState={setSessionState} sessionState={sessionState} switchSessionRef={switchSessionRef}/>
             </Canvas>
 
             {/* Overlays */}
@@ -106,19 +105,29 @@ export default function Title() {
                         setTimerType={setTimerType}
                         updateTimer={updateTimer}
                         currentMinutes={currentMinutes}
-                        onStart={() => setSessionState(SESSION.START)}
+                        onStart={() => {setSessionState(SESSION.START); setTimerType(TIMER.POMO)}}
                     />
                 )}
 
-                {(sessionState === SESSION.START || sessionState === SESSION.PLAY || sessionState === SESSION.PAUSE) && (
+                {(sessionState === SESSION.START || sessionState === SESSION.PLAY || sessionState === SESSION.PAUSE_START) && (
                     <StartSession
-                        timerType={timerType}
                         setTimerType={setTimerType}
                         currentMinutes={currentMinutes}
-                        onPause={() => setSessionState(SESSION.PAUSE)}
+                        onPause={() => setSessionState(SESSION.PAUSE_START)}
                         onPlay={() => setSessionState(SESSION.PLAY)}
                         sessionState={sessionState}
-                        switchSessionRef={switchSessionRef}
+                        setSessionState={setSessionState}
+                    />
+                )}
+
+                {(sessionState === SESSION.BREAK || sessionState === SESSION.PAUSE_BREAK) && (
+                    <BreakSession 
+                        setTimerType={setTimerType}
+                        currentMinutes={currentMinutes}
+                        onPause={() => setSessionState(SESSION.PAUSE_BREAK)}
+                        onResume={() => setSessionState(SESSION.BREAK)}
+                        sessionState={sessionState}
+                        setSessionState={setSessionState}
                     />
                 )}
             </AnimatePresence>

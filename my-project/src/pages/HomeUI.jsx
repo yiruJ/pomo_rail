@@ -5,11 +5,17 @@ import { useEffect, useState } from "react";
 
 export default function HomeUI({  timerType, setTimerType, updateTimer, currentMinutes, onStart }) {
     const [show, setShow] = useState(false);
-
+    
     useEffect(() => {
         const delay = setTimeout(() => setShow(true), 1500);
         return () => clearTimeout(delay);
     }, []);
+
+    useEffect(() => {
+      return (() => {
+        console.log(timerType);
+      })
+    }, [currentMinutes])
 
     return (
     <>
