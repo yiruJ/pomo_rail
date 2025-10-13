@@ -5,7 +5,7 @@ import { WorldLights } from "../scenes/WorldLights";
 import { Walls } from "../scenes/Walls";
 import TitleUI from "./TitleUI";
 import HomeUI from "./HomeUI";
-import StartSession from "./StartSession";
+import StartSession from "../sessions/StartSession";
 import handleTimer from "../hooks/TimerSettings";
 import OpenGate from "../movements/OpenGate";
 import { CAMERA_POSES } from "../constants/CameraPoses";
@@ -18,6 +18,8 @@ import TrackMovement from "../movements/TrackMovement";
 import TreeMovement from "../movements/TreeMovement";
 import LoadModels from "../scenes/LoadModels";
 import UpdateTrackSetPos from "../scenes/UpdateTrackSetPos";
+import UpdateTreeSetPos from "../scenes/UpdateTreeSetPos";
+import HandleSession from "../sessions/HandleSession";
 
 export default function Title() {
     const { timerType, currentMinutes, setTimerType, updateTimer } = handleTimer();
@@ -26,6 +28,7 @@ export default function Title() {
     const trackSetArrRef = useRef([]);
     const treeSetArrRef = useRef([]);
     const speedRef = useRef(0);
+    const switchSessionRef = useRef(false);
     const [sessionState, setSessionState] = useState(SESSION.TITLE);
     const [isVisible, setIsVisible] = useState({
         mainStation: true,
@@ -33,12 +36,6 @@ export default function Title() {
         tracks: true,
         trees: false,
     });
-
-    // const handleSetIsVisible = useCallback((updater) => {
-    //     setIsVisible(updater);
-    // }, []);
-
-    console.log(isVisible.trees);
 
     function handleCamera(inst) {
         if (!inst) return;   
@@ -91,6 +88,8 @@ export default function Title() {
                 <TreeMovement speedRef={speedRef} treeSetArrRef={treeSetArrRef} sessionState={sessionState} setIsVisible={setIsVisible}/>
                 <TrackMovement speedRef={speedRef} trackSetArrRef={trackSetArrRef}/>
                 <UpdateTrackSetPos trackSetArrRef={trackSetArrRef}/>
+                <UpdateTreeSetPos treeSetArrRef={treeSetArrRef}/>
+                <HandleSession setSessionState={setSessionState} sessionState={sessionState} switchSessionRef={switchSessionRef}/>
             </Canvas>
 
             {/* Overlays */}
@@ -119,6 +118,7 @@ export default function Title() {
                         onPause={() => setSessionState(SESSION.PAUSE)}
                         onPlay={() => setSessionState(SESSION.PLAY)}
                         sessionState={sessionState}
+                        switchSessionRef={switchSessionRef}
                     />
                 )}
             </AnimatePresence>

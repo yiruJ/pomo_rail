@@ -1,26 +1,11 @@
-import { useRef, useState, useEffect, useCallback } from "react";
-import { SESSION } from "../constants/Sessions";
+import { useFrame } from "@react-three/fiber";
 
-export default function TreeMovement({ speedRef, treeSetArrRef, sessionState, setIsVisible }) {
-    const hasShownTrees = useRef(false);
-
-    useEffect(() => {
-        if (sessionState === SESSION.START && !hasShownTrees.current) {
-            hasShownTrees.current = true;
-            
-            const delay = setTimeout(() => {
-                setIsVisible(prev => ({
-                    ...prev,
-                    trees: true,
-                }));
-            }, 4000);
-            
-            return () => clearTimeout(delay);
-        }
-    }, [sessionState, setIsVisible]);
+export default function TreeMovement({ speedRef, treeSetArrRef, sessionState }) {
+    useFrame((_, delta) => {
+        treeSetArrRef.current.forEach(treeSet => {
+            treeSet.position.x += speedRef.current * delta;
+        });
+    })
     
-    // useFrame((_, delta) => {
-    // });
-
     return null;
 }

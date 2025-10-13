@@ -7,7 +7,7 @@
 }
 
 .small-text {
-  @apply text-white font-quickSand text-2xl font-bold;
+  @apply text-white font-quickSand text-2xl font-bold opacity-50;
 }
 
 .medium-text {
@@ -23,9 +23,11 @@
 }
 
 .page-transition-button {
-  @apply font-quickSand text-6xl z-10
-      text-white font-bold transform transition-transform 
-        duration-100 hover:scale-125
+  @apply font-quickSand text-6xl z-10 text-white font-bold
+}
+
+.scale-button {
+  @apply transform transition-transform duration-100 hover:scale-125
 }
 
 .timer-panel {

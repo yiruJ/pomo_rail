@@ -2,7 +2,7 @@ import MainStationModel from "../components/MainStationModel";
 import TrainModel from "../components/TrainModel";
 import TrackSetModel from "../components/TrackSetModel";
 import TreeTwoModel from "../components/TreeTwoModel";
-import { useRef, useState, useEffect } from "react";
+import { useRef } from "react";
 
 export default function LoadModels( {mainStationRef, trackSetArrRef, treeSetArrRef, isVisible} ) {
     return (
@@ -24,9 +24,7 @@ export default function LoadModels( {mainStationRef, trackSetArrRef, treeSetArrR
                 rotation={[0, Math.PI, 0]}
             />
             <LoadTrackSets trackSetArrRef={trackSetArrRef} />
-            {isVisible.trees && (
-                <LoadTreeSets treeSetArrRef={treeSetArrRef} />
-            )}
+            <LoadTreeSets treeSetArrRef={treeSetArrRef} />
         </>
     )
 }
@@ -54,7 +52,7 @@ function LoadTrackSets({ trackSetArrRef }) {
 function LoadTreeSets({ treeSetArrRef }) {
     return (
         <>
-            {Array.from({ length: 4}, (_, i) => (
+            {Array.from({ length: 8}, (_, i) => (
                 <TreeTwoModel
                     key={i}
                     ref={(treeSet) => {
@@ -71,11 +69,10 @@ function LoadTreeSets({ treeSetArrRef }) {
     )
 }
 
-function useRandomTreeCoordinate() {
-    const randomZ = useRef(getRandomNum(-10, 15));
-    const randomX = useRef(getRandomNum(-20, -10));
-
-    return [randomX.current, 0, randomZ.current];
+export function useRandomTreeCoordinate() {
+    const randomZ = useRef(getRandomNum(-50, -5)); 
+    const randomX = useRef(getRandomNum(-140, -250)); 
+    return [randomX.current, -0.2, randomZ.current];
 }
 
 function getRandomNum(min, max) {

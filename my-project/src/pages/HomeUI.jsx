@@ -15,24 +15,6 @@ export default function HomeUI({  timerType, setTimerType, updateTimer, currentM
     <>
       {show && (
         <>
-          {/* wizard hat */}
-          <AnimatePresence>
-            <motion.div
-              className="z-20 absolute"
-              initial={{ opacity: 0, y: -8 }}
-              animate={{
-                opacity: 1,
-                y: 0,
-                left: timerType === TIMER.POMO ? "16.5%" : "34%",
-                top: "5%",
-              }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ type: "spring", stiffness: 100, damping: 15 }}
-            >
-              <FaHatWizard className="w-6 h-6 text-white/70" />
-            </motion.div>
-          </AnimatePresence>
-
           <div className="fixed inset-0 flex flex-col items-center w-6/12 p-[1%] mt-3">
             {/* timer types */}
             <AnimatePresence>
@@ -44,8 +26,8 @@ export default function HomeUI({  timerType, setTimerType, updateTimer, currentM
                 exit={{ opacity: 0, y: -16 }}
                 transition={{ duration: 0.4 }}
               >
-                <button onClick={() => setTimerType(TIMER.POMO)}><p className="small-text">Pomodoro</p></button>
-                <button onClick={() => setTimerType(TIMER.BREAK)}><p className="small-text">Break</p></button>
+                <motion.button onClick={() => setTimerType(TIMER.POMO)}><p className="small-text scale-button" style={{ opacity: timerType === TIMER.POMO ? 1 : 0.5 }}>Pomodoro</p></motion.button>
+                <motion.button onClick={() => setTimerType(TIMER.BREAK)}><p className="small-text scale-button" style={{ opacity: timerType === TIMER.BREAK ? 1 : 0.5 }}>Break</p></motion.button>
               </motion.div>
             </AnimatePresence>
 
@@ -77,7 +59,7 @@ export default function HomeUI({  timerType, setTimerType, updateTimer, currentM
             <AnimatePresence>
               <motion.button
                 key="start"
-                className="page-transition-button mt-[20%]"
+                className="page-transition-button mt-[20%] scale-button"
                 initial={{ opacity: 0, y: 12 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.4 }}

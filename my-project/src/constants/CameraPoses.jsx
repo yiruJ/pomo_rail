@@ -6,4 +6,5 @@ export const CAMERA_POSES = {
   [SESSION.START]: { pos: [-55, 40, 70], target: [-35, 15, -5], smooth: true  },
   [SESSION.PAUSE]: { pos: [-55, 40, 70], target: [-35, 15, -5], smooth: true  },
   [SESSION.PLAY]: { pos: [-55, 40, 70], target: [-35, 15, -5], smooth: true  },
+  [SESSION.BREAK]: { pos: [-55, 40, 70], target: [-35, 15, -5], smooth: true  },
 };

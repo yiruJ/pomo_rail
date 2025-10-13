@@ -14,6 +14,7 @@ export default function TreeTwoModel(props) {
         
         clone.traverse((obj) => {
             if (obj.isMesh) {
+                obj.castShadow = true;
                 obj.material = new THREE.MeshBasicMaterial({
                     map: txt,
                     toneMapped: false, 

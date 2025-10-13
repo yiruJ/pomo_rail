@@ -1,23 +1,17 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { FaPause } from "react-icons/fa6";
 import { FaPlay } from "react-icons/fa";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { SESSION } from "../constants/Sessions";
+import { TIMER } from "../constants/Timers";
 
-export default function StartSession({ timerType, setTimerType, currentMinutes, onPause, onPlay, sessionState }) {
+export default function PauseSession({ timerType, setTimerType, currentMinutes, onPause, onPlay, sessionState, switchSessionRef }) {
     const [remainingMins, setRemainingMins]  = useState(currentMinutes);
     const [remainingSecs, setRemainingSecs]  = useState(0);
 
     function StartTimer() {
         setTimeout(() => {
             if (sessionState === SESSION.PAUSE) return;
-            if (remainingMins === 0) {
-                if (timerType === TIMER.BREAK) {
-                    setTimerType(TIMER.POMO);
-                } else {
-                    setTimerType(TIMER.BREAK);
-                }
-            }
 
             if (remainingSecs === 0) {
                 setRemainingMins(remainingMins - 1);
@@ -27,6 +21,14 @@ export default function StartSession({ timerType, setTimerType, currentMinutes, 
             }
         }, 1000);
     }
+
+    useEffect(() => {
+        return (() => {
+            if (remainingSecs === 0 && remainingMins === 0) {
+                switchSessionRef.current = true;
+            }
+        })
+    }, [remainingSecs]);
 
     return (
         <>  
