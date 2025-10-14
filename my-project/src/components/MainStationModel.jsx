@@ -55,7 +55,7 @@ const MainStationModel = forwardRef((props, ref) => {
                 }
 
                 // Assign ref
-                if (name === "gate") gateRef.current = obj;
+                if (name.includes("gate") ) gateRef.current = obj;
                 mainStationRefs.current.push(obj);
             }
         });
@@ -88,7 +88,7 @@ const MainStationModel = forwardRef((props, ref) => {
             })
         },
         isOutOfFrame() {
-            if (gateRef.current?.position.x < -100) return true;
+            if (gateRef.current?.position.x < -200) return true;
         }
     }), []);
 

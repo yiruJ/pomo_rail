@@ -14,7 +14,7 @@ export function MiniStationMovement({ miniStationRef, speedRef, setIsVisible, mo
         //     return;
         // }
         const distance = speedRef.current * delta;
-        miniStationRef.current.moveStation(distance * 0.3);
+        miniStationRef.current.moveStation(distance * 0.32);
     });
 
   return null;

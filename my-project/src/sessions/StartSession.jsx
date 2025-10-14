@@ -32,7 +32,7 @@ export default function StartSession({ setTimerType, currentMinutes, onPause, on
     }, [remainingSecs, remainingMins, sessionState])
 
     useEffect(() => {
-        if (remainingSecs === 50 & remainingMins === 0) {
+        if (remainingSecs === 7 & remainingMins === 0) {
             setMoveStation(true);
         }
     }, [remainingMins, remainingSecs]);

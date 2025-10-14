@@ -3,7 +3,8 @@ import TrainModel from "../components/TrainModel";
 import TrackSetModel from "../components/TrackSetModel";
 import TreeTwoModel from "../components/TreeTwoModel";
 import MiniStationModel from "../components/MiniStationModel";
-import { useRef } from "react";
+import { useRef, useEffect } from "react";
+import * as THREE from "three";
 
 export default function LoadModels( {miniStationRef, mainStationRef, trackSetArrRef, treeSetArrRef, isVisible} ) {
     return (
@@ -49,7 +50,7 @@ function LoadTrackSets({ trackSetArrRef }) {
                     ref={(trackSet) => {
                         if (trackSet) trackSetArrRef.current[i] = trackSet;
                     }}
-                    position={[i * 106.3 - 106.3, 0, 18.5]}
+                    position={[-i * 212.7, 0, 18.5]}
                     rotation={[0, Math.PI, 0]}
                     scale={1}
                 />

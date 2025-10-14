@@ -26,7 +26,7 @@ export default function BreakSession({ setTimerType, currentMinutes, onPause, on
             } else {
                 setRemainingSecs(prev => prev - 1);
             }
-        }, 100);
+        }, 1000);
 
         return () => clearInterval(timer);
     }, [remainingSecs, remainingMins, sessionState])
