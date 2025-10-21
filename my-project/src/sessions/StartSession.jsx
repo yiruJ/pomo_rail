@@ -5,7 +5,7 @@ import { useRef, useState, useEffect } from "react";
 import { SESSION } from "../constants/Sessions";
 import { TIMER } from "../constants/Timers";
 
-export default function StartSession({ setTimerType, currentMinutes, onPause, onPlay, sessionState, setSessionState, setIsVisible, setMoveStation }) {
+export default function StartSession({ setTimerType, currentMinutes, onPause, onPlay, sessionState, setSessionState, setMoveStation }) {
     const [remainingMins, setRemainingMins]  = useState(currentMinutes);
     const [remainingSecs, setRemainingSecs]  = useState(0);
 
@@ -32,7 +32,7 @@ export default function StartSession({ setTimerType, currentMinutes, onPause, on
     }, [remainingSecs, remainingMins, sessionState])
 
     useEffect(() => {
-        if (remainingSecs === 7 & remainingMins === 0) {
+        if (remainingSecs === 7 && remainingMins === 0) {
             setMoveStation(true);
         }
     }, [remainingMins, remainingSecs]);

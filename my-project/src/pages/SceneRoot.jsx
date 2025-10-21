@@ -17,11 +17,13 @@ import SpeedController from "../movements/SpeedController";
 import TrackMovement from "../movements/TrackMovement";
 import TreeMovement from "../movements/TreeMovement";
 import { MiniStationMovement } from "../movements/MiniStationMovement";
+import { CloudMovement } from "../movements/CloudMovement";
 import LoadModels from "../scenes/LoadModels";
 import UpdateTrackSetPos from "../scenes/UpdateTrackSetPos";
 import UpdateTreeSetPos from "../scenes/UpdateTreeSetPos";
 import BreakSession from "../sessions/BreakSession";
 import { TIMER } from "../constants/Timers";
+import UpdateMiniStationPos from "../scenes/UpdateMiniStationPos";
 
 export default function Title() {
     const { timerType, currentMinutes, setTimerType, updateTimer } = handleTimer();
@@ -30,6 +32,7 @@ export default function Title() {
     const miniStationRef = useRef(null);
     const trackSetArrRef = useRef([]);
     const treeSetArrRef = useRef([]);
+    const cloudRef = useRef(null);
     const speedRef = useRef(0);
     const [sessionState, setSessionState] = useState(SESSION.TITLE);
     const [isVisible, setIsVisible] = useState({
@@ -38,6 +41,7 @@ export default function Title() {
         tracks: true,
         trees: false,
         miniStation: true,
+        cloud: false,
     });
     const [moveStation, setMoveStation] = useState(false);
 
@@ -72,7 +76,7 @@ export default function Title() {
                 gl={{ shadowMap: { enabled: true, type: THREE.PCFSoftShadowMap } }}>
                 {/* <CameraLogger /> */}
                 <WorldLights/>
-                <LoadModels miniStationRef={miniStationRef} mainStationRef={mainStationRef} trackSetArrRef={trackSetArrRef} treeSetArrRef={treeSetArrRef} isVisible={isVisible}/>
+                <LoadModels miniStationRef={miniStationRef} mainStationRef={mainStationRef} trackSetArrRef={trackSetArrRef} treeSetArrRef={treeSetArrRef} isVisible={isVisible} cloudRef={cloudRef}/>
                 <Environment preset="lobby" /> 
                 <Walls/>
                 <CameraControls  
@@ -86,10 +90,11 @@ export default function Title() {
                     enableZoom={true} 
                     enableRotate={true}
                 />
-                <SpeedController sessionState={sessionState} speedRef={speedRef}/>
+                <SpeedController sessionState={sessionState} speedRef={speedRef} setIsVisible={setIsVisible}/>
                 <OpenGate gateRef={mainStationRef} active={sessionState === SESSION.START}/>
                 <MainStationMovement speedRef={speedRef} mainStationRef={mainStationRef} setIsVisible={setIsVisible} />
-                <MiniStationMovement miniStationRef={miniStationRef} speedRef={speedRef} setIsVisible={setIsVisible} moveStation={moveStation}/>
+                <MiniStationMovement miniStationRef={miniStationRef} speedRef={speedRef} moveStation={moveStation} setMoveStation={setMoveStation}/>
+                <CloudMovement cloudRef={cloudRef} speedRef={speedRef} setIsVisible={setIsVisible}/>
                 <TreeMovement speedRef={speedRef} treeSetArrRef={treeSetArrRef} sessionState={sessionState} setIsVisible={setIsVisible}/>
                 <TrackMovement speedRef={speedRef} trackSetArrRef={trackSetArrRef}/>
                 <UpdateTrackSetPos trackSetArrRef={trackSetArrRef}/>

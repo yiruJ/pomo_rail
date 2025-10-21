@@ -3,18 +3,21 @@ import TrainModel from "../components/TrainModel";
 import TrackSetModel from "../components/TrackSetModel";
 import TreeTwoModel from "../components/TreeTwoModel";
 import MiniStationModel from "../components/MiniStationModel";
-import { useRef, useEffect } from "react";
-import * as THREE from "three";
+import CloudModel from "../components/CloudModel";
+import { useRef, useEffect, useState } from "react";
+import { MODEL_LOAD } from "../constants/Models";
 
-export default function LoadModels( {miniStationRef, mainStationRef, trackSetArrRef, treeSetArrRef, isVisible} ) {
+export default function LoadModels( {miniStationRef, mainStationRef, trackSetArrRef, treeSetArrRef, cloudRef, isVisible} ) {
+    const trainRef = useRef(null);
+
     return (
         <>
             {isVisible.mainStation && (
                 <MainStationModel 
                     castShadow 
-                    scale={1} 
-                    position={[0, -1, -3]} 
-                    rotation={[0, Math.PI, 0]}
+                    scale={MODEL_LOAD.MAIN.scale} 
+                    position={MODEL_LOAD.MAIN.pos} 
+                    rotation={MODEL_LOAD.MAIN.rotation}
                     ref={mainStationRef}
                 />
             )}
@@ -22,22 +25,53 @@ export default function LoadModels( {miniStationRef, mainStationRef, trackSetArr
             {isVisible.miniStation && (
                 <MiniStationModel 
                     castShadow 
-                    scale={1.5} 
-                    position={[-150, 0, 10]} 
-                    rotation={[0, Math.PI, 0]}
+                    scale={MODEL_LOAD.MINI.scale} 
+                    rotation={MODEL_LOAD.MINI.rotation}
                     ref={miniStationRef}
                 />
             )}
 
             <TrainModel 
                 castShadow 
-                scale={1} 
-                position={[-10, 1.3, 20]} 
-                rotation={[0, Math.PI, 0]}
+                scale={MODEL_LOAD.TRAIN.scale} 
+                position={MODEL_LOAD.TRAIN.pos} 
+                rotation={MODEL_LOAD.TRAIN.rotation}
+                ref={trainRef}
             />
             <LoadTrackSets trackSetArrRef={trackSetArrRef} />
             <LoadTreeSets treeSetArrRef={treeSetArrRef} />
+            
+            <LoadClouds trainRef={trainRef} isVisible={isVisible} cloudRef={cloudRef} />
         </>
+    )
+}
+
+function LoadClouds({trainRef, isVisible, cloudRef }) {
+    const [cloudPosition, setCloudPosition] = useState(null);
+
+    useEffect(() => {
+        const check = setInterval(() => {
+            if (trainRef.current) {
+                const funnelPos = trainRef.current.getFunnelPos();
+                setCloudPosition([funnelPos.x, funnelPos.y, funnelPos.z]);
+                clearInterval(check); 
+            }
+        }, 100);
+
+        return () => clearInterval(check); 
+    }, []); 
+
+    if (!cloudPosition) return null;
+
+    return (
+        <CloudModel 
+            castShadow 
+            scale={MODEL_LOAD.CLOUD.scale} 
+            position={cloudPosition} 
+            rotation={MODEL_LOAD.CLOUD.rotation}
+            visible={isVisible.cloud}
+            ref={cloudRef}
+        />
     )
 }
 
@@ -51,8 +85,8 @@ function LoadTrackSets({ trackSetArrRef }) {
                         if (trackSet) trackSetArrRef.current[i] = trackSet;
                     }}
                     position={[-i * 212.7, 0, 18.5]}
-                    rotation={[0, Math.PI, 0]}
-                    scale={1}
+                    rotation={MODEL_LOAD.TRACK_SET.rotation}
+                    scale={MODEL_LOAD.TRACK_SET.scale}
                 />
             ))
 
@@ -71,8 +105,8 @@ function LoadTreeSets({ treeSetArrRef }) {
                         if (treeSet) treeSetArrRef.current[i] = treeSet;
                     }}
                     position={useRandomTreeCoordinate()}
-                    rotation={[0, Math.PI, 0]}
-                    scale={1}
+                    rotation={MODEL_LOAD.TREE.rotation}
+                    scale={MODEL_LOAD.TREE.scale}
                 />
             ))
 

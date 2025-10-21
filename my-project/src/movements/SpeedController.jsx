@@ -2,11 +2,17 @@ import { useFrame } from "@react-three/fiber";
 import { SESSION } from "../constants/Sessions";
 import { useEffect, useState } from "react";
 
-export default function SpeedController({ sessionState, speedRef }) {
+export default function SpeedController({ sessionState, speedRef, setIsVisible }) {
     const [move, setMove] = useState(false);
     useEffect(() => {
         if (sessionState === SESSION.START) {
-            const delay = setTimeout(() => setMove(true), 2000);
+            const delay = setTimeout(() => {
+                setMove(true); 
+                setIsVisible(prev => ({
+                    ...prev,
+                    cloud: true,
+                }));
+            }, 2000);
             return () => clearTimeout(delay);
         }
     }, [sessionState]);

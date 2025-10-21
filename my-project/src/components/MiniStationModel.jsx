@@ -1,11 +1,12 @@
 import { useGLTF, useTexture } from "@react-three/drei";
 import { forwardRef, useImperativeHandle, useRef, useEffect } from "react";
 import * as THREE from "three";
+import { MODEL_LOAD } from "../constants/Models";
 
 const MiniStationModel = forwardRef((props, ref) => {
     const { scene } = useGLTF("/models/mini_station.glb"); // put train.glb in /public/models
     const miniStationRefs = useRef([]);
-
+    const primitiveRef = useRef();
     const textures = {
         body : useTexture("/textures/mini_station_body.webp"),
         base : useTexture("/textures/mini_station_base.webp"),
@@ -17,8 +18,11 @@ const MiniStationModel = forwardRef((props, ref) => {
     }))
 
     useEffect(() => {
+        miniStationRefs.current = [];
+
         scene.traverse((obj) => {
             if (obj.isMesh) {
+                obj.castShadow = true;
                 const name = obj.name;
                 
                 if (name.includes("base")) {
@@ -36,22 +40,29 @@ const MiniStationModel = forwardRef((props, ref) => {
                 miniStationRefs.current.push(obj);
             }
         });
-    }, [scene])
 
+        scene.position.set(...MODEL_LOAD.MINI.pos);
+    }, [scene])
 
     useImperativeHandle(ref, () => ({
         moveStation(dist) {
-            console.log(miniStationRefs.current);
-            miniStationRefs.current.forEach((obj) => {
-                obj.position.x -= dist;
-            })
+            primitiveRef.current.position.x += dist;
         },
         isOutOfFrame() {
-            if (miniStationRefs.current[0].position.x > 100) return true;
+            if (primitiveRef.current.position.x > 80) return true;
+        },
+        setStationPos() {
+            const [x, y, z] = MODEL_LOAD.MINI.pos;
+            if (primitiveRef.current) {
+                primitiveRef.current.position.set(x, y, z);
+            }
+        },
+        getPosition() {
+            return primitiveRef.current;
         }
-    }), [])
+    }), [primitiveRef])
 
-    return <primitive object={scene} {...props} />;
+    return <primitive ref={primitiveRef} object={scene} {...props} />;
 })
 
 export default MiniStationModel;

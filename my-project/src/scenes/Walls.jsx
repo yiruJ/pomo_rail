@@ -5,7 +5,7 @@ export function Walls() {
     const FOG_COLOUR = "#c3dee9"
     return (
         <>
-            <fog attach="fog" args={[FOG_COLOUR, 100, 200]} />
+            {/* <fog attach="fog" args={[FOG_COLOUR, 100, 200]} /> */}
             <mesh receiveShadow rotation={[-Math.PI / 2, 0, 0]} position={[0, 0, 0]}>
                 <planeGeometry args={[1000, 1000]} />  {/* width, height */}
                 <meshStandardMaterial color={BG_COLOUR} side={THREE.DoubleSide} />
