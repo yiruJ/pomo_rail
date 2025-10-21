@@ -5,6 +5,7 @@ import React, { forwardRef, useImperativeHandle, useRef, useEffect } from "react
 const MainStationModel = forwardRef((props, ref) => {
     const { scene } = useGLTF("/models/main_station.glb");
     const gateRef = useRef(null);
+    const bellRef = useRef(null);
     const mainStationRefs = useRef([]);
     const textures = {
         body : useTexture("/textures/main_station_body.webp"),
@@ -55,7 +56,8 @@ const MainStationModel = forwardRef((props, ref) => {
                 }
 
                 // Assign ref
-                if (name.includes("gate") ) gateRef.current = obj;
+                if (name.includes("gate")) gateRef.current = obj;
+                if (name.includes("bell")) console.log(obj);
                 mainStationRefs.current.push(obj);
             }
         });

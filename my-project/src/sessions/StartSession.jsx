@@ -1,7 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { FaPause } from "react-icons/fa6";
 import { FaPlay } from "react-icons/fa";
-import { useRef, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { SESSION } from "../constants/Sessions";
 import { TIMER } from "../constants/Timers";
 

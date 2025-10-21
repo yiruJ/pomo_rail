@@ -23,7 +23,6 @@ import UpdateTrackSetPos from "../scenes/UpdateTrackSetPos";
 import UpdateTreeSetPos from "../scenes/UpdateTreeSetPos";
 import BreakSession from "../sessions/BreakSession";
 import { TIMER } from "../constants/Timers";
-import UpdateMiniStationPos from "../scenes/UpdateMiniStationPos";
 
 export default function Title() {
     const { timerType, currentMinutes, setTimerType, updateTimer } = handleTimer();
@@ -52,20 +51,6 @@ export default function Title() {
         inst.setLookAt(...pos, ...target, smooth);
     }
 
-    function CameraLogger() {
-        useFrame(() => {
-            const c = camCtrlRef.current;
-            if (c) {
-            const pos = new THREE.Vector3();
-            const tgt = new THREE.Vector3();
-            c.getPosition(pos);
-            c.getTarget(tgt);
-            console.log("Camera pos:", pos, "Target:", tgt);
-            }
-        });
-        return null;
-    }
-
     return (
         <div className="relative">
             <Canvas
@@ -74,7 +59,6 @@ export default function Title() {
                 style={{ width: '100%', height: '100vh'}}
                 camera={{ position: [-5.5, 70.8, 12.6], fov: 50 }}
                 gl={{ shadowMap: { enabled: true, type: THREE.PCFSoftShadowMap } }}>
-                {/* <CameraLogger /> */}
                 <WorldLights/>
                 <LoadModels miniStationRef={miniStationRef} mainStationRef={mainStationRef} trackSetArrRef={trackSetArrRef} treeSetArrRef={treeSetArrRef} isVisible={isVisible} cloudRef={cloudRef}/>
                 <Environment preset="lobby" /> 
