@@ -1,47 +1,12 @@
-# Pomodoro Train Station ⏰🚂
-A 3D productivity app built with **Three.js** and **React**. (In Progress)  
-Stay focused with a relaxing train journey that follows your Pomodoro sessions.  
+# React + Vite
 
----
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## ⚠️ Project Status
-This project is currently **under development**.  
-The core 3D models are complete and basic scenes are working, with timer and backend features planned.  
+Currently, two official plugins are available:
 
----
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## 🎥 Preview
-![Alt text for image](./my-project/public/demo_images/home_page.png)
-![Alt text for image](./my-project/public/demo_images/title_page.png)
+## Expanding the ESLint configuration
 
-### Blender renders:
-![Alt text for image](./my-project/public/demo_images/main_station_scene.png)
-![Alt text for image](./my-project/public/demo_images/session_scene.png)
-
-
-
----
-
-## ✨ Features
-
-### ✅ Implemented
-- Custom 3D models of train + station (created in Blender).
-- Title page scene with basic UI.
-- Train station and train rendered in Three.js.
-- React + Tailwind integration for layout and styling.
-
-### 🚧 Planned
-- Pomodoro timer with start/pause/reset.
-- Animated train loops that sync with session time.
-- Backend integration (Node.js + MongoDB) for saving sessions & streaks.
-- Multiplayer “study with friends” mode.
-- Extra themes (day/night, cherry blossom, winter).
-
----
-
-## 🛠 Tech Stack
-- [Three.js](https://threejs.org/) – 3D rendering  
-- [React](https://reactjs.org/) + [Vite](https://vitejs.dev/) – frontend framework  
-- [TailwindCSS](https://tailwindcss.com/) – styling  
-- [Blender](https://www.blender.org/) – 3D model design  
-- Planned: **Node.js** (Express) + **MongoDB** – backend & persiste
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
